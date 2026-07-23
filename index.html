@@ -1567,10 +1567,10 @@
       css += 'body.print-compare .compare-table th.cmp-grp{text-align:center;vertical-align:middle;white-space:normal;}';
       css += 'body.print-compare .compare-table tr.col-filter-row{display:none !important;}';
       css += 'body.print-compare .compare-table th,body.print-compare .compare-table td{white-space:normal !important;word-break:break-word;overflow-wrap:break-word;}';
-      css += 'body.print-compare .compare-table{table-layout:auto !important;}';
+      css += 'body.print-compare .compare-table{table-layout:fixed !important;min-width:0 !important;width:100% !important;max-width:100% !important;}';
+      css += 'body.print-compare table{min-width:0 !important;}';
       css += 'body.print-compare .col-idx{display:none !important;}';
-      css += 'body.print-compare .compare-table-wrap{overflow:visible !important;max-height:none !important;}';
-      css += 'body.print-compare .app{overflow:visible !important;}';
+      css += 'body.print-compare .compare-table-wrap{overflow:hidden !important;max-height:none !important;width:100% !important;}';
       css += 'body.print-compare .compare-table td.pdf-stacked .pdf-xml,body.print-compare .compare-table td.pdf-stacked .pdf-col{line-height:1.5;}';
       css += 'body.print-compare .compare-table td.pdf-stacked .pdf-col{margin-top:.6mm !important;padding-top:.6mm !important;}';
       return css;
