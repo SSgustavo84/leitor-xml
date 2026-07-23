@@ -257,6 +257,26 @@
     td.num, th.num { text-align: right; white-space: nowrap; }
     .product-name { font-weight: 700; color: var(--text); }
     .product-sub { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    /* Nota Fiscal: linhas mais compactas e coluna Produto fixa/alargada */
+    table[aria-label="Produtos da nota fiscal"] th,
+    table[aria-label="Produtos da nota fiscal"] td { padding-top: 6px; padding-bottom: 6px; vertical-align: middle; }
+    table[aria-label="Produtos da nota fiscal"] th:first-child,
+    table[aria-label="Produtos da nota fiscal"] td:first-child {
+      position: sticky; left: 0; z-index: 3;
+      width: 300px; min-width: 300px; max-width: 300px;
+      background: #1f1f1f; box-shadow: 1px 0 0 var(--border);
+    }
+    table[aria-label="Produtos da nota fiscal"] thead th:first-child { z-index: 5; background: #262626; }
+    table[aria-label="Produtos da nota fiscal"] .product-row:hover td:first-child { background: #242424; }
+    /* Filtros por coluna (inline no cabecalho) */
+    .col-filter-row th { padding: 4px 6px !important; background: var(--soft); }
+    .col-filter-input { width: 100%; box-sizing: border-box; padding: 4px 7px; font-size: 11px; font-weight: 400; background: var(--canvas); color: var(--text); border: 1px solid var(--border); border-radius: 6px; text-transform: none; letter-spacing: normal; }
+    .col-filter-input::placeholder { color: var(--muted); }
+    .col-filter-input:focus { outline: none; border-color: var(--accent); }
+    select.col-filter-select { cursor: pointer; -webkit-appearance: none; appearance: none; }
+    select.col-filter-select.on { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+    .col-filter-select option { background: #1f1f1f; color: var(--text); }
+    @media print { tr.col-filter-row { display: none !important; } }
 
     .raw {
       display: none;
@@ -589,6 +609,42 @@
     .compare-table th.cmp-sub { text-align:center; font-weight:600; color:var(--muted); font-size:12px; background:var(--surface); }
     .compare-table thead tr:first-child th[colspan] { text-align:center; }
     .compare-table td.cmp-diff { color:#f2b0aa; font-weight:700; background:#3a1d1c; }
+    /* --- Colunas fixas (codigo/descricao) na comparacao (tela) --- */
+    @media screen {
+      .compare-table th.col-idx, .compare-table td.col-idx { width:34px; min-width:34px; text-align:center; }
+      .compare-table th.col-code, .compare-table td.col-code { width:84px; min-width:84px; max-width:84px; }
+      .compare-table th.col-desc, .compare-table td.col-desc { width:220px; min-width:220px; max-width:220px; }
+      .compare-table td.col-code, .compare-table td.col-desc { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+      .compare-table th.col-idx, .compare-table td.col-idx,
+      .compare-table th.col-code, .compare-table td.col-code,
+      .compare-table th.col-desc, .compare-table td.col-desc { position:sticky; }
+      .compare-table tbody td.col-idx, .compare-table tbody td.col-code, .compare-table tbody td.col-desc { background:#1f1f1f; }
+      .compare-table thead th.col-idx, .compare-table thead th.col-code, .compare-table thead th.col-desc { background:#262626; }
+      .compare-table th.col-idx, .compare-table td.col-idx { left:0; }
+      .compare-table th.col-code, .compare-table td.col-code { left:34px; }
+      .compare-table th.col-desc, .compare-table td.col-desc { left:118px; box-shadow:1px 0 0 var(--border); }
+      .compare-table thead th.col-idx, .compare-table thead th.col-code, .compare-table thead th.col-desc { z-index:6; }
+      .compare-table tbody td.col-idx, .compare-table tbody td.col-code, .compare-table tbody td.col-desc { z-index:4; }
+      .compare-table tbody tr.compare-row { cursor:pointer; }
+      .compare-table tbody tr.compare-row:hover td { background:var(--soft); }
+      .compare-table tbody tr.compare-row:hover td.col-idx,
+      .compare-table tbody tr.compare-row:hover td.col-code,
+      .compare-table tbody tr.compare-row:hover td.col-desc { background:#2b3440; }
+    }
+    /* --- Card com dados da nota (aba comparacao) --- */
+    .compare-invoice { margin:0 0 18px; border:1px solid var(--border); border-radius:12px; background:var(--surface); padding:14px 16px; }
+    .compare-invoice .ci-empty { color:var(--muted); font-size:13px; }
+    .compare-invoice-head { display:flex; flex-wrap:wrap; align-items:baseline; gap:8px 14px; margin-bottom:12px; }
+    .compare-invoice-title { font-size:15px; font-weight:700; margin:0; }
+    .compare-invoice-badge { font-size:12px; font-weight:600; color:var(--accent); background:var(--accent-soft); padding:3px 10px; border-radius:999px; }
+    .compare-invoice-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px 16px; }
+    .ci-item .k { font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; color:var(--muted); font-weight:700; margin-bottom:2px; }
+    .ci-item .v { font-size:14px; overflow-wrap:anywhere; }
+    .cmp-modal-v { display:flex; flex-direction:column; gap:3px; }
+    .cmp-modal-line { font-size:14px; }
+    .cmp-modal-line .tag { display:inline-block; min-width:46px; margin-right:6px; color:var(--muted); font-weight:700; font-size:10.5px; text-transform:uppercase; letter-spacing:.03em; }
+    .cmp-modal-line.paste.diff { color:#f2b0aa; font-weight:700; }
+    .cmp-modal-line.paste.diff .tag { color:#f2b0aa; }
     .row-status { font-weight:700; white-space:nowrap; }
     .row-status.ok { color:#4fb488; }
     .row-status.diff { color:#ef6a5d; }
@@ -648,13 +704,20 @@
       body.print-compare .compare-open-row, body.print-compare .compare-head p, body.print-compare .compare-empty { display:none !important; }
       body.print-compare .compare-head h2 { margin:0 0 3mm; font-size:12pt; color:#000; }
       body.print-compare .compare-summary { margin:0 0 3mm; }
+      body.print-compare .compare-invoice { border:.5pt solid #888 !important; background:#fff !important; color:#000 !important; padding:2mm 3mm !important; margin:0 0 3mm !important; border-radius:0 !important; }
+      body.print-compare .compare-invoice .ci-empty { display:none !important; }
+      body.print-compare .compare-invoice-title { color:#000 !important; font-size:9.5pt !important; }
+      body.print-compare .compare-invoice-badge { background:#eee !important; color:#000 !important; border:.4pt solid #999 !important; }
+      body.print-compare .compare-invoice-grid { gap:1mm 5mm !important; }
+      body.print-compare .ci-item .k { color:#333 !important; }
+      body.print-compare .ci-item .v { color:#000 !important; }
       body.print-compare .compare-table-wrap { overflow:visible !important; }
       body.print-compare .compare-table { width:100%; border-collapse:collapse; font-size:6.6pt; color:#000; table-layout:fixed; }
       body.print-compare .compare-table th, body.print-compare .compare-table td { overflow-wrap:anywhere; word-break:break-word; }
-      body.print-compare .compare-table .col-idx { width:3.5%; text-align:center; }
+      body.print-compare .compare-table .col-idx { width:3%; text-align:center; }
       body.print-compare .compare-table .col-code { width:9%; }
       body.print-compare .compare-table .col-desc { width:19%; }
-      body.print-compare .compare-table .col-status { width:9%; }
+      body.print-compare .compare-table .col-status { width:7%; }
       body.print-compare .compare-table td.cmp-num, body.print-compare .compare-table th.cmp-sub { text-align:right; }
       body.print-compare .compare-table th, body.print-compare .compare-table td { border:.55pt solid #555; padding:.7mm .8mm; color:#000; }
       body.print-compare .compare-table th { background:#e2e2e2 !important; }
@@ -875,6 +938,25 @@
                   <th class="num">IBS Mun.</th>
                   <th class="num">CBS</th>
                 </tr>
+                <tr class="col-filter-row">
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="0" placeholder="Filtrar produto" aria-label="Filtrar Produto"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="1" placeholder="Filtrar" aria-label="Filtrar NCM/CFOP"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="2" placeholder="Filtrar" aria-label="Filtrar Qtd"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="3" placeholder="Filtrar" aria-label="Filtrar Un"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="4" placeholder="Filtrar" aria-label="Filtrar Vl. unit."></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="5" placeholder="Filtrar" aria-label="Filtrar Vl. total"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="6" placeholder="Filtrar" aria-label="Filtrar CST/CSOSN"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="7" placeholder="Filtrar" aria-label="Filtrar BC ICMS"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="8" placeholder="Filtrar" aria-label="Filtrar Aliq"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="9" placeholder="Filtrar" aria-label="Filtrar ICMS"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="10" placeholder="Filtrar" aria-label="Filtrar IPI"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="11" placeholder="Filtrar" aria-label="Filtrar CST IBS/CBS"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="12" placeholder="Filtrar" aria-label="Filtrar Class. trib."></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="13" placeholder="Filtrar" aria-label="Filtrar BC IBS/CBS"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="14" placeholder="Filtrar" aria-label="Filtrar IBS UF"></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="15" placeholder="Filtrar" aria-label="Filtrar IBS Mun."></th>
+                  <th><input class="col-filter-input nf-col-filter" data-nfcol="16" placeholder="Filtrar" aria-label="Filtrar CBS"></th>
+                </tr>
               </thead>
               <tbody id="productsBody"></tbody>
             </table>
@@ -897,6 +979,9 @@
         <div class="compare-head">
           <h2>Comparação de dados</h2>
           <p>O tipo de layout (<strong>Em recebimento</strong> ou <strong>Nota recebida</strong>) é identificado <strong>automaticamente</strong> ao comparar (modo <strong>Automático</strong>) — só é preciso forçar manualmente nos botões acima em casos raros. Cole os dados copiados do seu sistema (uma linha por produto, colunas separadas por TAB). O leitor reconhece automaticamente as colunas do seu relatório — com ou sem a linha de títulos — e compara com o XML os campos: Total Produto, Base ICMS, Alíq ICMS, Valor ICMS, Valor IPI e os campos de IBS/CBS (BC IBS/CBS, CBS, IBS UF). Código, Descrição, Embalagem e Quantidade são exibidos apenas como referência (o que você colou), sem comparar. As demais colunas são ignoradas.</p>
+        </div>
+        <div class="compare-invoice" id="compareInvoice">
+          <div class="ci-empty">Importe um XML na aba “Nota Fiscal” para ver aqui os dados da nota.</div>
         </div>
         <div class="compare-open-row">
           <button type="button" class="btn primary" id="openCompareModal"><span aria-hidden="true">📋</span> Colar dados para comparar</button>
@@ -960,6 +1045,7 @@
     const dropzone = $('dropzone');
     const rawXml = $('rawXml');
     let productRows = [];
+    let lastCompare = { rows: [] };
     let currentXml = '';
 
     const sampleXml = `<?xml version="1.0" encoding="UTF-8"?><nfeProc><NFe><infNFe Id="NFe35260212345678000190550010000012341000012345"><ide><cUF>35</cUF><mod>55</mod><serie>1</serie><nNF>1234</nNF><dhEmi>2026-02-20T10:35:00-03:00</dhEmi></ide><emit><CNPJ>12345678000190</CNPJ><xNome>Empresa Exemplo Comércio LTDA</xNome><IE>110042490114</IE><enderEmit><xMun>São José do Rio Preto</xMun><UF>SP</UF></enderEmit></emit><dest><CNPJ>98765432000110</CNPJ><xNome>Cliente Demonstração SA</xNome><enderDest><xMun>São Paulo</xMun><UF>SP</UF></enderDest></dest><det nItem="1"><prod><cProd>001</cProd><xProd>Produto fiscal exemplo</xProd><NCM>22021000</NCM><CFOP>5102</CFOP><uCom>UN</uCom><qCom>12.0000</qCom><vUnCom>8.5000</vUnCom><vProd>102.00</vProd></prod><imposto><ICMS><ICMS00><vICMS>18.36</vICMS></ICMS00></ICMS><IPI><IPITrib><vIPI>0.00</vIPI></IPITrib></IPI><IBSCBS><CST>000</CST><cClassTrib>000001</cClassTrib><vBC>102.00</vBC><gIBSUF><pIBSUF>0.10</pIBSUF><vIBSUF>0.10</vIBSUF></gIBSUF><gIBSMun><pIBSMun>0.00</pIBSMun><vIBSMun>0.00</vIBSMun></gIBSMun><gCBS><pCBS>0.90</pCBS><vCBS>0.92</vCBS></gCBS></IBSCBS></imposto></det><det nItem="2"><prod><cProd>002</cProd><xProd>Serviço ou item complementar</xProd><NCM>21069090</NCM><CFOP>5102</CFOP><uCom>CX</uCom><qCom>3.0000</qCom><vUnCom>45.0000</vUnCom><vProd>135.00</vProd></prod><imposto><ICMS><ICMS00><vICMS>24.30</vICMS></ICMS00></ICMS></imposto></det><total><ICMSTot><vProd>237.00</vProd><vICMS>42.66</vICMS><vIPI>0.00</vIPI><vFrete>0.00</vFrete><vNF>237.00</vNF></ICMSTot><IBSCBSTot><vBC>102.00</vBC><vIBSUF>0.10</vIBSUF><vIBSMun>0.00</vIBSMun><vIBS>0.10</vIBS><vCBS>0.92</vCBS></IBSCBSTot></total></infNFe></NFe><protNFe><infProt><chNFe>35260212345678000190550010000012341000012345</chNFe><cStat>100</cStat><xMotivo>Autorizado o uso da NF-e</xMotivo></infProt></protNFe></nfeProc>`;
@@ -1120,7 +1206,8 @@
         const prod = det.querySelector('prod');
         const imposto = det.querySelector('imposto');
         const icmsNode = taxGroup(imposto, 'ICMS');
-        const ipiNode = taxGroup(imposto, 'IPI');
+        const ipiWrap = imposto ? imposto.querySelector('IPI') : null;
+        const ipiNode = ipiWrap ? (ipiWrap.querySelector('IPITrib') || ipiWrap.querySelector('IPINT') || ipiWrap) : null;
         const ibsCbsNode = findTaxNode(imposto, ['IBSCBS', 'IBS_CBS', 'gIBSCBS', 'impostoDevol']);
         const ibsUfNode = findTaxNode(ibsCbsNode, ['gIBSUF', 'IBSUF']);
         const ibsMunNode = findTaxNode(ibsCbsNode, ['gIBSMun', 'IBSMun']);
@@ -1130,6 +1217,7 @@
         return {
           item: det.getAttribute('nItem') || String(index + 1),
           code: text(prod, 'cProd'),
+          ean: text(prod, 'cEAN'),
           name: text(prod, 'xProd'),
           ncm: text(prod, 'NCM'),
           cfop: text(prod, 'CFOP'),
@@ -1141,8 +1229,12 @@
           bcIcms: text(icmsNode, 'vBC'),
           aliqIcms: text(icmsNode, 'pICMS'),
           icms: text(icmsNode, 'vICMS'),
+          bcIpi: firstText(ipiNode, ['vBC']),
+          aliqIpi: firstText(ipiNode, ['pIPI']),
           ipi: firstText(ipiNode, ['vIPI']),
+          bcPis: firstText(pisNode, ['vBC']),
           pis: firstText(pisNode, ['vPIS']),
+          bcCofins: firstText(cofinsNode, ['vBC']),
           cofins: firstText(cofinsNode, ['vCOFINS']),
           cstIbsCbs: firstText(ibsCbsNode, ['CST', 'cst']),
           classTrib: firstText(ibsCbsNode, ['cClassTrib', 'CClassTrib']),
@@ -1154,6 +1246,24 @@
       });
 
       productRows = rows;
+      renderCompareInvoice({
+        emit: text(emit, 'xNome'),
+        emitDoc: formatDoc(firstText(emit, ['CNPJ', 'CPF'])),
+        uf: text(emit, 'enderEmit UF'),
+        mun: text(emit, 'enderEmit xMun'),
+        dest: text(dest, 'xNome'),
+        destDoc: formatDoc(firstText(dest, ['CNPJ', 'CPF', 'idEstrangeiro'])),
+        num: text(ide, 'nNF'),
+        serie: text(ide, 'serie'),
+        tipo: codeLabel(typeMap, text(ide, 'tpNF')),
+        natOp: text(ide, 'natOp'),
+        emi: formatDate(firstText(ide, ['dhEmi', 'dEmi'])),
+        vProd: money(text(totals, 'vProd')),
+        vICMS: money(text(totals, 'vICMS')),
+        vNF: money(firstText(totals, ['vNF', 'vCFe'])),
+        items: rows.length,
+        key: accessKey
+      });
       $('itemCount').textContent = `${rows.length} ${rows.length === 1 ? 'item' : 'itens'}`;
       const totalRoot = doc;
       set('totalBCIBSCBS', money(firstTotalText(totalRoot, ['IBSCBSTot vBC', 'gIBSCBSTot vBC', 'total vBCIBSCBS'], sumValues(rows, 'bcIbsCbs'))));
@@ -1199,6 +1309,7 @@
       invoice.classList.add('loaded');
       window.invoiceLoaded = true;
       if (window.updateFabs) window.updateFabs();
+      if (window.applyNotaColumnFilters) window.applyNotaColumnFilters();
       showStatus('XML importado com sucesso. A nota está pronta para exportação em PDF.', 'ok');
     }
 
@@ -1206,6 +1317,28 @@
       return String(value || '').replace(/[&<>'"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[ch]));
     }
 
+
+    function applyNotaColumnFilters() {
+      const inputs = document.querySelectorAll('.nf-col-filter');
+      const filters = [];
+      inputs.forEach(inp => { const v = inp.value.trim().toLowerCase(); if (v) filters.push({ col: Number(inp.dataset.nfcol), v }); });
+      const rows = document.querySelectorAll('#productsBody tr.product-row');
+      let visible = 0;
+      rows.forEach(tr => {
+        const cells = tr.children;
+        const show = filters.every(f => cells[f.col] && cells[f.col].textContent.toLowerCase().includes(f.v));
+        tr.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      const body = document.getElementById('productsBody');
+      let nr = document.getElementById('nfNoFilterRow');
+      if (filters.length && visible === 0 && rows.length) {
+        if (!nr) { nr = document.createElement('tr'); nr.id = 'nfNoFilterRow'; nr.innerHTML = '<td colspan="17" style="text-align:center;color:var(--muted)">Nenhum produto corresponde aos filtros.</td>'; body.appendChild(nr); }
+        nr.style.display = '';
+      } else if (nr) { nr.style.display = 'none'; }
+    }
+    window.applyNotaColumnFilters = applyNotaColumnFilters;
+    document.addEventListener('input', function (e) { if (e.target.classList && e.target.classList.contains('nf-col-filter')) applyNotaColumnFilters(); });
 
     function productDetail(label, value) {
       return `<div class="product-detail-item"><div class="k">${escapeHtml(label)}</div><div class="v">${escapeHtml(value || '—')}</div></div>`;
@@ -1220,7 +1353,11 @@
         productDetail('NCM', r.ncm), productDetail('CFOP', r.cfop), productDetail('Unidade', r.unit),
         productDetail('Quantidade', qty(r.q)), productDetail('Valor unitário', money(r.unitValue)), productDetail('Valor total', money(r.total)),
         productDetail('CST/CSOSN', r.cst), productDetail('BC ICMS', money(r.bcIcms)), productDetail('Alíquota ICMS', r.aliqIcms ? qty(r.aliqIcms) + '%' : '—'),
-        productDetail('ICMS', money(r.icms)), productDetail('IPI', money(r.ipi)), productDetail('CST IBS/CBS', r.cstIbsCbs),
+        productDetail('ICMS', money(r.icms)),
+        productDetail('BC IPI', money(r.bcIpi)), productDetail('Al\u00edq IPI', r.aliqIpi ? qty(r.aliqIpi) + '%' : '\u2014'), productDetail('Valor IPI', money(r.ipi)),
+        productDetail('Base PIS', money(r.bcPis)), productDetail('Valor PIS', money(r.pis)),
+        productDetail('Base COFINS', money(r.bcCofins)), productDetail('Valor COFINS', money(r.cofins)),
+        productDetail('CST IBS/CBS', r.cstIbsCbs),
         productDetail('Class. trib.', r.classTrib), productDetail('BC IBS/CBS', money(r.bcIbsCbs)), productDetail('IBS UF', money(r.ibsUf)),
         productDetail('IBS Mun.', money(r.ibsMun)), productDetail('CBS', money(r.cbs))
       ].join('');
@@ -1301,12 +1438,50 @@
       if (window.pdfDateInName) { var d = new Date(); dt = '-' + d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0'); }
       return prefix + (num ? '-' + num : '') + dt + '.pdf';
     }
+    function pdfStackCompare(doc) {
+      var tbl = doc.querySelector('.compare-table');
+      if (!tbl) return;
+      var heads = tbl.querySelectorAll('thead tr');
+      if (heads.length >= 2) {
+        var grp = heads[0].querySelectorAll('th.cmp-grp');
+        for (var i = 0; i < grp.length; i++) { grp[i].setAttribute('colspan', '1'); grp[i].setAttribute('rowspan', '2'); }
+        heads[1].parentNode.removeChild(heads[1]);
+      }
+      var frs = tbl.querySelectorAll('tr.col-filter-row');
+      for (var fi = 0; fi < frs.length; fi++) { frs[fi].style.display = 'none'; }
+      var rows = tbl.querySelectorAll('tbody tr');
+      for (var r = 0; r < rows.length; r++) {
+        var xmls = rows[r].querySelectorAll('td.cmp-xml-cell');
+        for (var x = 0; x < xmls.length; x++) {
+          var cell = xmls[x];
+          var pair = cell.nextElementSibling;
+          if (!pair || !pair.classList.contains('cmp-paste-cell')) continue;
+          var diff = pair.classList.contains('cmp-diff');
+          var strip = function (s) { return s.replace(/R\$[\s\u00a0]*/g, ''); };
+          cell.innerHTML = '<span class=\'pdf-xml\'>' + strip(cell.innerHTML) + '</span><span class=\'pdf-col' + (diff ? ' pdf-diff' : '') + '\'>' + strip(pair.innerHTML) + '</span>';
+          cell.classList.add('pdf-stacked');
+          pair.parentNode.removeChild(pair);
+        }
+      }
+    }
     function generatePdf(opts) {
       var printFallback = function () {
-        if (opts.compare) { activateTab('comp'); document.body.classList.add('print-compare'); }
-        else { activateTab('nota'); }
+        if (opts.compare) {
+          activateTab('comp');
+          document.body.classList.add('print-compare');
+          if (window.pdfStackPairs !== false) {
+            var cr = document.getElementById('compareResult');
+            if (cr) { window.__compareStackBackup = cr.innerHTML; try { pdfStackCompare(document); } catch (e) { console.log('stack err', e); } }
+          }
+          var pex = document.getElementById('pdf-print-extra');
+          if (pex && pex.parentNode) pex.parentNode.removeChild(pex);
+          pex = document.createElement('style');
+          pex.id = 'pdf-print-extra';
+          pex.textContent = opts.extraCss || pdfCompareOverridesCss();
+          document.head.appendChild(pex);
+        } else { activateTab('nota'); }
         window.print();
-        if (opts.compare) setTimeout(function () { document.body.classList.remove('print-compare'); }, 800);
+        if (opts.compare) setTimeout(restoreComparePrint, 900);
       };
       showStatus('Gerando PDF…', 'ok');
       Promise.all([
@@ -1320,9 +1495,10 @@
           backgroundColor: '#ffffff',
           scale: opts.scale || 2,
           useCORS: true,
-          windowWidth: opts.landscape ? 1123 : 794,
+          windowWidth: opts.windowWidth || (opts.landscape ? 1123 : 794),
           onclone: function (doc) {
             if (opts.compare) doc.body.classList.add('print-compare');
+            if (opts.compare && window.pdfStackPairs !== false) { try { pdfStackCompare(doc); } catch (e) { console.log('stack err', e); } }
             var st = doc.createElement('style');
             st.setAttribute('data-pdf-print', '1');
             st.textContent = printCss;
@@ -1368,12 +1544,13 @@
 
     function pdfCompareOverridesCss() {
       var css = '';
-      var font = (typeof window.pdfCompareFontPt === 'number' && window.pdfCompareFontPt) ? window.pdfCompareFontPt : 6.6;
+      var font = (typeof window.pdfCompareFontPt === 'number' && window.pdfCompareFontPt) ? window.pdfCompareFontPt : 6.2;
       css += 'body.print-compare .compare-table{font-size:' + font + 'pt !important;}';
       var pad = window.pdfCompareDensity === 'comfortable' ? '1.4mm 1.8mm' : '.7mm .8mm';
       css += 'body.print-compare .compare-table th,body.print-compare .compare-table td{padding:' + pad + ' !important;}';
-      css += 'body.print-compare .compare-table .col-desc{width:' + (window.pdfCompareDescWidth || 19) + '% !important;}';
-      css += 'body.print-compare .compare-table .col-code{width:' + (window.pdfCompareCodeWidth || 9) + '% !important;}';
+      css += 'body.print-compare .compare-table .col-desc{width:' + (window.pdfCompareDescWidth || 11) + '% !important;}';
+      css += 'body.print-compare .compare-table .col-code{width:' + (window.pdfCompareCodeWidth || 6) + '% !important;}';
+      css += 'body.print-compare .compare-table .col-status{width:' + (window.pdfCompareStatusWidth || 6) + '% !important;}';
       if (window.pdfCompareHeaderColor === 'blue') { css += 'body.print-compare .compare-table th.cmp-grp,body.print-compare .compare-table th.cmp-sub{background:#dbe9fb !important;color:#1e40af !important;}'; }
       else if (window.pdfCompareHeaderColor === 'green') { css += 'body.print-compare .compare-table th.cmp-grp,body.print-compare .compare-table th.cmp-sub{background:#dcf5e8 !important;color:#166534 !important;}'; }
       if (window.pdfCompareBorders === 'soft') { css += 'body.print-compare .compare-table th,body.print-compare .compare-table td{border:.35pt solid #cfcfcf !important;}'; }
@@ -1382,17 +1559,42 @@
       if (window.pdfCompareHighlightDiff === false) { css += 'body.print-compare .compare-table td.cmp-diff{background:#ffffff !important;color:#000 !important;font-weight:400 !important;}'; }
       else if (window.pdfCompareDiffColor === 'orange') { css += 'body.print-compare .compare-table td.cmp-diff{background:#ffedd5 !important;color:#7c2d12 !important;}'; }
       else if (window.pdfCompareDiffColor === 'yellow') { css += 'body.print-compare .compare-table td.cmp-diff{background:#fef9c3 !important;color:#713f12 !important;}'; }
+      css += 'body.print-compare .compare-table td.pdf-stacked{text-align:right;vertical-align:top;}';
+      css += 'body.print-compare .compare-table td.pdf-stacked .pdf-xml,body.print-compare .compare-table td.pdf-stacked .pdf-col{display:block;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.2;}';
+      css += 'body.print-compare .compare-table td.pdf-stacked .pdf-xml{color:#555;}';
+      css += 'body.print-compare .compare-table td.pdf-stacked .pdf-col{border-top:.3pt dashed #c4c4c4;margin-top:.3mm;padding-top:.3mm;color:#000;}';
+      css += 'body.print-compare .compare-table td.pdf-stacked .pdf-col.pdf-diff{color:#991b1b;font-weight:700;}';
+      css += 'body.print-compare .compare-table th.cmp-grp{text-align:center;vertical-align:middle;white-space:normal;}';
+      css += 'body.print-compare .compare-table tr.col-filter-row{display:none !important;}';
+      css += 'body.print-compare .compare-table th,body.print-compare .compare-table td{white-space:normal !important;word-break:break-all;overflow-wrap:anywhere;}';
+      css += 'body.print-compare .compare-table{table-layout:auto !important;}';
+      css += 'body.print-compare .col-idx{display:none !important;}';
+      css += 'body.print-compare .compare-table-wrap{overflow:visible !important;max-height:none !important;}';
+      css += 'body.print-compare .app{overflow:visible !important;}';
+      css += 'body.print-compare .compare-table td.pdf-stacked .pdf-xml,body.print-compare .compare-table td.pdf-stacked .pdf-col{line-height:1.5;}';
+      css += 'body.print-compare .compare-table td.pdf-stacked .pdf-col{margin-top:.6mm !important;padding-top:.6mm !important;}';
+      css += 'body.print-compare .compare-table td,body.print-compare .compare-table th{min-width:14mm;}';
       return css;
     }
+    function restoreComparePrint() {
+      document.body.classList.remove('print-compare');
+      var pex = document.getElementById('pdf-print-extra');
+      if (pex && pex.parentNode) pex.parentNode.removeChild(pex);
+      var cr = document.getElementById('compareResult');
+      if (cr && window.__compareStackBackup != null) { cr.innerHTML = window.__compareStackBackup; window.__compareStackBackup = null; }
+    }
+    window.restoreComparePrint = restoreComparePrint;
     function printCompare() {
       if (!window.compareHasData) {
         showStatus('Faça uma comparação antes de baixar o PDF.', 'error');
         return;
       }
-      generatePdf({ landscape: window.pdfCompareOrientation !== 'portrait', compare: true, scale: window.pdfCompareScale || 2, extraCss: pdfCompareOverridesCss(), filename: pdfFilename('Comparacao-NF') });
+      var wrap = document.querySelector('.compare-table-wrap');
+      var dynWidth = wrap ? Math.max(wrap.scrollWidth + 80, window.pdfCompareCanvasWidth || 2200) : (window.pdfCompareCanvasWidth || 2200);
+      generatePdf({ landscape: window.pdfCompareOrientation !== 'portrait', compare: true, windowWidth: dynWidth, scale: window.pdfCompareScale || 2, extraCss: pdfCompareOverridesCss(), filename: pdfFilename('Comparacao-NF') });
     }
     window.printCompare = printCompare;
-    window.addEventListener('afterprint', function () { document.body.classList.remove('print-compare'); });
+    window.addEventListener('afterprint', function () { restoreComparePrint(); });
 
     window.toggleRawXml = () => rawXml.classList.toggle('show');
 
@@ -1445,6 +1647,8 @@
       { key:'ipi', re:/^valor ipi$/ },
       { key:'pis', re:/^(valor pis|vlr\.? pis|pis)$/ },
       { key:'cofins', re:/^(valor cofins|vlr\.? cofins|cofins)$/ },
+      { key:'bcPis', re:/^(base pis|bc pis|pis base|valor base pis)$/ },
+      { key:'bcCofins', re:/^(base cofins|bc cofins|cofins base|valor base cofins)$/ },
       { key:'bcIbsCbs', re:/^cbs valor base$/ },
       { key:'cbs', re:/^cbs valor imposto$/ },
       { key:'cstIbsCbs', re:/^cbs cst$/ },
@@ -1452,8 +1656,8 @@
       { key:'ibsUf', re:/^ibsuf valor imposto$/ },
       { key:'ibsMun', re:/^ibs ?mun valor imposto$/ }
     ];
-    const CMP_LABELS = { code:'Código', name:'Descrição', unit:'Un./Emb.', ncm:'NCM', cfop:'CFOP', q:'Qtd.', unitValue:'Vlr unit.', total:'Total Produto', bcIcms:'Base ICMS', aliqIcms:'Alíq ICMS', icms:'Valor ICMS', ipi:'Valor IPI', pis:'PIS', cofins:'COFINS', bcIbsCbs:'BC IBS/CBS', cbs:'CBS', cstIbsCbs:'CST IBS/CBS', classTrib:'Class. trib.', ibsUf:'IBS UF', ibsMun:'IBS Mun.' };
-    const CMP_NUMERIC = new Set(['q', 'unitValue', 'total', 'bcIcms', 'aliqIcms', 'icms', 'ipi', 'pis', 'cofins', 'bcIbsCbs', 'cbs', 'ibsUf', 'ibsMun']);
+    const CMP_LABELS = { code:'Código', name:'Descrição', unit:'Un./Emb.', ncm:'NCM', cfop:'CFOP', q:'Qtd.', unitValue:'Vlr unit.', total:'Total Produto', bcIcms:'Base ICMS', aliqIcms:'Alíq ICMS', icms:'Valor ICMS', ipi:'Valor IPI', bcPis:'Base PIS', pis:'Valor PIS', bcCofins:'Base COFINS', cofins:'Valor COFINS', bcIbsCbs:'BC IBS/CBS', cbs:'CBS', cstIbsCbs:'CST IBS/CBS', classTrib:'Class. trib.', ibsUf:'IBS UF', ibsMun:'IBS Mun.' };
+    const CMP_NUMERIC = new Set(['q', 'unitValue', 'total', 'bcIcms', 'aliqIcms', 'icms', 'ipi', 'bcPis', 'pis', 'bcCofins', 'cofins', 'bcIbsCbs', 'cbs', 'ibsUf', 'ibsMun']);
     // Layout posicional do relatório (usado quando os dados são colados sem a linha de títulos)
     const CMP_POSITIONS = { 0:'code', 1:'name', 2:'unit', 3:'q', 4:'total', 14:'bcIcms', 15:'aliqIcms', 16:'icms', 21:'ipi', 73:'bcIbsCbs', 75:'cbs', 77:'cstIbsCbs', 78:'classTrib', 90:'ibsUf' };
     // Layout posicional do relatorio de notas RECEBIDAS (planilha colunas recebidas)
@@ -1537,7 +1741,7 @@
       if (value == null || value === '') return '—';
       if (key === 'q') return qty(value);
       if (key === 'aliqIcms') return qty(value) + '%';
-      if (key === 'unitValue' || key === 'total' || key === 'bcIcms' || key === 'icms' || key === 'ipi' || key === 'pis' || key === 'cofins' || key === 'bcIbsCbs' || key === 'cbs' || key === 'ibsUf' || key === 'ibsMun') return money(cmpNum(value));
+      if (key === 'unitValue' || key === 'total' || key === 'bcIcms' || key === 'icms' || key === 'ipi' || key === 'bcPis' || key === 'pis' || key === 'bcCofins' || key === 'cofins' || key === 'bcIbsCbs' || key === 'cbs' || key === 'ibsUf' || key === 'ibsMun') return money(cmpNum(value));
       return escapeHtml(value);
     }
     function cmpEqual(key, a, b) {
@@ -1556,6 +1760,7 @@
 
     function runCompare() {
       const result = $('compareResult');
+      lastCompare = { rows: [] };
       window.compareHasData = false;
       if (window.updateFabs) window.updateFabs();
       if (!productRows.length) {
@@ -1569,7 +1774,9 @@
       if (!parsed.rows.length) { result.innerHTML = '<div class="compare-empty">Não consegui identificar linhas nos dados colados.</div>'; return; }
 
       // item/código/descrição/embalagem/quantidade não entram na comparação (variam por fornecedor/cadastro); só exibimos o que foi colado.
-      const compareFields = ['ncm', 'cfop', 'unitValue', 'total', 'bcIcms', 'aliqIcms', 'icms', 'ipi', 'pis', 'cofins', 'cstIbsCbs', 'classTrib', 'bcIbsCbs', 'ibsUf', 'ibsMun', 'cbs'].filter(f => parsed.fields.includes(f));
+      const xmlHas = (f) => productRows.some(r => r && r[f] != null && r[f] !== '');
+      const alwaysShow = new Set(['ncm', 'bcPis', 'pis', 'bcCofins', 'cofins']);
+      const compareFields = ['ncm', 'cfop', 'unitValue', 'total', 'bcIcms', 'aliqIcms', 'icms', 'ipi', 'bcPis', 'pis', 'bcCofins', 'cofins', 'cstIbsCbs', 'classTrib', 'bcIbsCbs', 'ibsUf', 'ibsMun', 'cbs'].filter(f => parsed.fields.includes(f) || (alwaysShow.has(f) && xmlHas(f)));
       const numCls = (f) => CMP_NUMERIC.has(f) ? ' cmp-num' : '';
 
       let okCount = 0, diffCount = 0, missCount = 0, extraCount = 0;
@@ -1601,12 +1808,15 @@
           if (rowDiff) { status = 'Divergente'; statusClass = 'diff'; diffCount++; }
           else { status = compared ? 'Confere' : 'Sem dados'; statusClass = compared ? 'ok' : 'miss'; if (compared) okCount++; else missCount++; }
         }
-        bodyRows.push(`<tr data-status="${statusClass}"><td>${idx + 1}</td><td>${escapeHtml(pcode)}</td><td>${escapeHtml(pname)}</td>${cells}<td class="row-status ${statusClass}">${status}</td></tr>`);
+        lastCompare.rows[idx] = { xr, pr, statusLabel: status };
+        bodyRows.push(`<tr class="compare-row" data-status="${statusClass}" data-compare-index="${idx}" tabindex="0" title="Clique para ver detalhes"><td class="col-idx">${idx + 1}</td><td class="col-code">${escapeHtml(pcode)}</td><td class="col-desc">${escapeHtml(pname)}</td>${cells}<td class="row-status ${statusClass}">${status}</td></tr>`);
       }
       const rowsHtml = bodyRows.join('');
 
       const headTop = compareFields.map(f => `<th colspan="2" class="cmp-grp">${CMP_LABELS[f]}</th>`).join('');
       const headSub = compareFields.map(() => `<th class="cmp-sub cmp-grp">XML</th><th class="cmp-sub">Colado</th>`).join('');
+      const cmpFilterCells = compareFields.map((f, i) => `<th colspan="2" class="cmp-grp"><select class="col-filter-input col-filter-select cmp-col-diff" data-pastecol="${4 + i * 2}" aria-label="Filtrar ${CMP_LABELS[f]}"><option value="">Todos</option><option value="diff">Divergente</option><option value="ok">Confere</option></select></th>`).join('');
+      const cmpStatusColIdx = 3 + compareFields.length * 2;
       const modeChip = (cmpMode === 'auto' && window.__detectedLayout) ? `<span class="compare-chip info">Layout: ${window.__detectedLayout === 'recebida' ? 'Nota recebida' : 'Em recebimento'}</span>` : '';
       const chips = [
         modeChip,
@@ -1621,8 +1831,9 @@
         <div class="compare-table-wrap">
           <table class="compare-table">
             <thead>
-              <tr><th rowspan="2" class="col-idx">#</th><th rowspan="2" class="col-code">Código (colado)</th><th rowspan="2" class="col-desc">Descrição (colada)</th>${headTop}<th rowspan="2" class="col-status">Situação</th></tr>
+              <tr><th rowspan="2" class="col-idx">#</th><th rowspan="2" class="col-code">Código</th><th rowspan="2" class="col-desc">Descrição</th>${headTop}<th rowspan="2" class="col-status">Situação</th></tr>
               <tr>${headSub}</tr>
+              <tr class="col-filter-row"><th class="col-idx"></th><th class="col-code"><input class="col-filter-input cmp-col-filter" data-cmpcols="1" placeholder="Filtrar" aria-label="Filtrar Código"></th><th class="col-desc"><input class="col-filter-input cmp-col-filter" data-cmpcols="2" placeholder="Filtrar" aria-label="Filtrar Descrição"></th>${cmpFilterCells}<th class="col-status"><input class="col-filter-input cmp-col-filter" data-cmpcols="${cmpStatusColIdx}" placeholder="Filtrar" aria-label="Filtrar Situação"></th></tr>
             </thead>
             <tbody>${rowsHtml}</tbody>
           </table>
@@ -1632,6 +1843,79 @@
       if (window.updateFabs) window.updateFabs();
     }
 
+    function ciField(k, v) {
+      const val = (v == null || v === '') ? '\u2014' : String(v);
+      return `<div class="ci-item"><div class="k">${escapeHtml(k)}</div><div class="v">${escapeHtml(val)}</div></div>`;
+    }
+    function renderCompareInvoice(d) {
+      const box = $('compareInvoice');
+      if (!box) return;
+      const keyFmt = d.key ? String(d.key).replace(/\D/g, '').replace(/(.{4})/g, '$1 ').trim() : '\u2014';
+      const ufMun = [d.uf, d.mun].filter(Boolean).join(' \u00b7 ');
+      box.innerHTML = `
+        <div class="compare-invoice-head">
+          <h3 class="compare-invoice-title">${escapeHtml(d.emit || '\u2014')}</h3>
+          <span class="compare-invoice-badge">NF-e ${escapeHtml(d.num || '\u2014')} \u00b7 S\u00e9rie ${escapeHtml(d.serie || '\u2014')}</span>
+        </div>
+        <div class="compare-invoice-grid">
+          ${ciField('CNPJ/CPF emit.', d.emitDoc)}
+          ${ciField('UF / Munic\u00edpio', ufMun)}
+          ${ciField('Tipo', d.tipo)}
+          ${ciField('Natureza opera\u00e7\u00e3o', d.natOp)}
+          ${ciField('Emiss\u00e3o', d.emi)}
+          ${ciField('Destinat\u00e1rio', d.dest)}
+          ${ciField('Doc. destinat\u00e1rio', d.destDoc)}
+          ${ciField('Total produtos', d.vProd)}
+          ${ciField('ICMS total', d.vICMS)}
+          ${ciField('Valor da NF', d.vNF)}
+          ${ciField('Itens', d.items)}
+          ${ciField('Chave de acesso', keyFmt)}
+        </div>`;
+    }
+    function cmpDetail(label, key, xr, pr) {
+      const xmlVal = xr ? cmpDisplay(key, xr[key]) : '\u2014';
+      let v = `<div class="cmp-modal-line xml"><span class="tag">XML</span>${xmlVal}</div>`;
+      if (pr) {
+        const isDiff = cmpEqual(key, xr && xr[key], pr[key]) === false;
+        v += `<div class="cmp-modal-line paste${isDiff ? ' diff' : ''}"><span class="tag">Colado</span>${cmpDisplay(key, pr[key])}</div>`;
+      }
+      return `<div class="product-detail-item"><div class="k">${escapeHtml(label)}</div><div class="v cmp-modal-v">${v}</div></div>`;
+    }
+    function showCompareRowDetail(idx) {
+      const rec = lastCompare.rows[Number(idx)];
+      if (!rec) return;
+      const xr = rec.xr, pr = rec.pr;
+      const title = (pr && pr.name) || (xr && xr.name) || 'Produto';
+      const code = (pr && pr.code) || (xr && xr.code) || '\u2014';
+      $('productModalTitle').textContent = title;
+      $('productModalSub').textContent = `Item ${Number(idx) + 1} \u00b7 C\u00f3digo ${code} \u00b7 ${rec.statusLabel || ''}`.trim();
+      $('productModalBody').innerHTML = [
+        (xr && xr.ean && xr.ean !== 'SEM GTIN' ? `<div class="product-detail-item"><div class="k">EAN (XML)</div><div class="v">${escapeHtml(xr.ean)}</div></div>` : ''),
+        cmpDetail('NCM','ncm',xr,pr), cmpDetail('CFOP','cfop',xr,pr), cmpDetail('Unidade/Emb.','unit',xr,pr),
+        cmpDetail('Quantidade','q',xr,pr), cmpDetail('Valor unit\u00e1rio','unitValue',xr,pr), cmpDetail('Total Produto','total',xr,pr),
+        cmpDetail('BC ICMS','bcIcms',xr,pr), cmpDetail('Al\u00edq ICMS','aliqIcms',xr,pr), cmpDetail('Valor ICMS','icms',xr,pr),
+        cmpDetail('Valor IPI','ipi',xr,pr),
+        cmpDetail('Base PIS','bcPis',xr,pr), cmpDetail('Valor PIS','pis',xr,pr),
+        cmpDetail('Base COFINS','bcCofins',xr,pr), cmpDetail('Valor COFINS','cofins',xr,pr),
+        cmpDetail('CST IBS/CBS','cstIbsCbs',xr,pr), cmpDetail('Class. trib.','classTrib',xr,pr),
+        cmpDetail('BC IBS/CBS','bcIbsCbs',xr,pr), cmpDetail('IBS UF','ibsUf',xr,pr), cmpDetail('IBS Mun.','ibsMun',xr,pr),
+        cmpDetail('CBS','cbs',xr,pr)
+      ].join('');
+      const modal = $('productModal');
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      $('productModalClose').focus();
+    }
+    document.addEventListener('click', (event) => {
+      const cmpTrigger = event.target.closest && event.target.closest('[data-compare-index]');
+      if (cmpTrigger) showCompareRowDetail(cmpTrigger.dataset.compareIndex);
+    });
+    document.addEventListener('keydown', (event) => {
+      if ((event.key === 'Enter' || event.key === ' ') && event.target.matches && event.target.matches('.compare-row')) {
+        event.preventDefault();
+        showCompareRowDetail(event.target.dataset.compareIndex);
+      }
+    });
     function openCompareModal() {
       const modal = $('compareModal');
       modal.classList.add('open');
@@ -1838,16 +2122,44 @@
         if (fabFilter) fabFilter.setAttribute('aria-expanded', open ? 'true' : 'false');
       }
       function applyCompareFilter(status) {
-        var rows = document.querySelectorAll('#compareResult .compare-table tbody tr');
+        if (status !== undefined && status !== null) window.__cmpStatusFilter = status;
+        var st = window.__cmpStatusFilter || 'all';
+        var colFilters = [];
+        document.querySelectorAll('#compareResult .cmp-col-filter').forEach(function (inp) {
+          var v = inp.value.trim().toLowerCase();
+          if (v) colFilters.push({ cols: inp.getAttribute('data-cmpcols').split(',').map(Number), v: v });
+        });
+        var diffFilters = [];
+        document.querySelectorAll('#compareResult .cmp-col-diff').forEach(function (sel) {
+          sel.classList.toggle('on', !!sel.value);
+          if (sel.value) diffFilters.push({ col: Number(sel.getAttribute('data-pastecol')), mode: sel.value });
+        });
+        var rows = document.querySelectorAll('#compareResult .compare-table tbody tr.compare-row');
         rows.forEach(function (tr) {
           var s = tr.getAttribute('data-status');
-          tr.style.display = (status === 'all' || s === status) ? '' : 'none';
+          var passStatus = (st === 'all' || s === st);
+          var cells = tr.children;
+          var passCols = colFilters.every(function (f) {
+            return f.cols.some(function (c) { return cells[c] && cells[c].textContent.toLowerCase().indexOf(f.v) !== -1; });
+          });
+          var passDiff = diffFilters.every(function (f) {
+            var cell = cells[f.col];
+            if (!cell) return false;
+            var isDiff = cell.classList.contains('cmp-diff');
+            if (f.mode === 'diff') return isDiff;
+            var xmlCell = cells[f.col - 1];
+            var hasVals = cell.textContent.trim() !== '\u2014' && xmlCell && xmlCell.textContent.trim() !== '\u2014';
+            return !isDiff && hasVals;
+          });
+          tr.style.display = (passStatus && passCols && passDiff) ? '' : 'none';
         });
         if (filterMenu) filterMenu.querySelectorAll('.fab-filter-opt').forEach(function (o) {
-          o.classList.toggle('active', o.getAttribute('data-filter') === status);
+          o.classList.toggle('active', o.getAttribute('data-filter') === st);
         });
       }
       window.applyCompareFilter = applyCompareFilter;
+      document.addEventListener('input', function (e) { if (e.target.classList && e.target.classList.contains('cmp-col-filter')) applyCompareFilter(); });
+      document.addEventListener('change', function (e) { if (e.target.classList && e.target.classList.contains('cmp-col-diff')) applyCompareFilter(); });
       if (fabFilter) fabFilter.addEventListener('click', function (e) { e.stopPropagation(); toggleFilterMenu(); });
       if (filterMenu) filterMenu.querySelectorAll('.fab-filter-opt').forEach(function (opt) {
         opt.addEventListener('click', function () { applyCompareFilter(opt.getAttribute('data-filter')); });
@@ -1876,6 +2188,7 @@
       window.uiAccent = 'blue';
       window.pdfCompareCodeWidth = 9;
       window.pdfCompareHeaderColor = 'gray';
+      window.pdfCompareCanvasWidth = 2200;
       window.pdfJpegQuality = 0.92;
       window.pdfDateInName = false;
       var ACCENTS = { blue: ['#5e9fe8', 'rgba(94,159,232,0.16)'], green: ['#46b17f', 'rgba(70,177,127,0.18)'], purple: ['#9a7cf0', 'rgba(154,124,240,0.18)'], orange: ['#e08a3c', 'rgba(224,138,60,0.18)'] };
