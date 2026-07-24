@@ -1002,6 +1002,109 @@
         <div class="compare-result" id="compareResult">
           <div class="compare-empty">Importe um XML e cole os dados para ver a comparação aqui.</div>
         </div>
+
+        <!-- ===== Calculadora IBS / CBS (Reforma Tributaria) ===== -->
+        <section class="ibscbs-calc no-print" id="ibsCbsCalc">
+          <style>
+            .ibscbs-calc{margin-top:36px;border-top:1px solid var(--border);padding-top:26px;}
+            .ibscbs-calc h2{margin:0 0 6px;font-size:22px;}
+            .ibscbs-calc .ic-sub{margin:0 0 20px;color:var(--muted);max-width:82ch;line-height:1.5;font-size:13px;}
+            .ibscbs-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start;}
+            @media(max-width:760px){.ibscbs-grid{grid-template-columns:1fr;}}
+            .ic-card{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:16px 18px;}
+            .ic-card h3{margin:0 0 14px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);}
+            .ic-field{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px;}
+            .ic-field:last-child{margin-bottom:0;}
+            .ic-field label{font-size:13px;font-weight:600;color:var(--text);}
+            .ic-inp{position:relative;display:inline-flex;align-items:center;}
+            .ic-field input{width:120px;text-align:right;padding:7px 26px 7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--canvas);color:var(--text);font-size:13px;font-variant-numeric:tabular-nums;-moz-appearance:textfield;}
+            .ic-field input::-webkit-outer-spin-button,.ic-field input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+            .ic-field input:focus{outline:2px solid var(--accent);border-color:var(--accent);}
+            .ic-inp .u{position:absolute;right:9px;font-size:12px;color:var(--muted);pointer-events:none;}
+            .ic-out{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;}
+            .ic-out .l{color:var(--muted);}
+            .ic-out .v{font-weight:700;font-variant-numeric:tabular-nums;}
+            .ic-sec{margin:14px 0 4px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:700;}
+            .ic-out.hi .v{color:var(--accent);}
+            .ic-total{margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 16px;border-radius:10px;background:var(--accent-soft);}
+            .ic-total .l{font-weight:700;font-size:14px;color:var(--text);}
+            .ic-total .v{font-weight:800;font-size:19px;font-variant-numeric:tabular-nums;color:var(--text);}
+            .ic-note{margin-top:12px;font-size:11px;color:var(--muted);line-height:1.5;}
+          </style>
+          <h2>Calculadora IBS / CBS</h2>
+          <p class="ic-sub">Simulação da Reforma Tributária com a <strong>base do IBS/CBS vinculada à base de PIS/COFINS</strong> (Total &minus; ICMS, conforme STF Tema 69). CBS e IBS aplicam o fator de redução. Ajuste os valores abaixo &mdash; o cálculo é atualizado automaticamente.</p>
+          <div class="ibscbs-grid">
+            <div class="ic-card">
+              <h3>Entradas</h3>
+              <div class="ic-field"><label for="icTotal">Valor Total do Produto</label><span class="ic-inp"><input type="number" step="0.01" id="icTotal" value="608.70"><span class="u">R$</span></span></div>
+              <div class="ic-field"><label for="icDespesas">Despesas Acessórias (+)</label><span class="ic-inp"><input type="number" step="0.01" id="icDespesas" value="0"><span class="u">R$</span></span></div>
+              <div class="ic-field"><label for="icDesconto">Desconto (&minus;)</label><span class="ic-inp"><input type="number" step="0.01" id="icDesconto" value="0"><span class="u">R$</span></span></div>
+              <div class="ic-field"><label for="icAliqIcms">Alíquota ICMS</label><span class="ic-inp"><input type="number" step="0.01" id="icAliqIcms" value="18"><span class="u">%</span></span></div>
+              <div class="ic-field"><label for="icValIcms">Valor do ICMS</label><span class="ic-inp"><input type="number" step="0.01" id="icValIcms" value="109.57"><span class="u">R$</span></span></div>
+              <div class="ic-field"><label for="icAliqPis">Alíquota PIS</label><span class="ic-inp"><input type="number" step="0.0001" id="icAliqPis" value="1.65"><span class="u">%</span></span></div>
+              <div class="ic-field"><label for="icAliqCofins">Alíquota COFINS</label><span class="ic-inp"><input type="number" step="0.0001" id="icAliqCofins" value="7.6"><span class="u">%</span></span></div>
+              <div class="ic-field"><label for="icAliqCbs">Alíquota CBS (Federal)</label><span class="ic-inp"><input type="number" step="0.0001" id="icAliqCbs" value="0.9"><span class="u">%</span></span></div>
+              <div class="ic-field"><label for="icAliqIbsUf">Alíquota IBS UF (Estadual)</label><span class="ic-inp"><input type="number" step="0.0001" id="icAliqIbsUf" value="0.1"><span class="u">%</span></span></div>
+              <div class="ic-field"><label for="icAliqIbsMun">Alíquota IBS Mun (Municipal)</label><span class="ic-inp"><input type="number" step="0.0001" id="icAliqIbsMun" value="0"><span class="u">%</span></span></div>
+              <div class="ic-field"><label for="icReducao">Fator de Redução (CBS/IBS)</label><span class="ic-inp"><input type="number" step="1" id="icReducao" value="60"><span class="u">%</span></span></div>
+            </div>
+            <div class="ic-card">
+              <h3>Resultado</h3>
+              <div class="ic-sec">Base de cálculo</div>
+              <div class="ic-out"><span class="l">Valor Total Efetivo (Produto + Desp. &minus; Desc.)</span><span class="v" id="icOutTotalEff">&mdash;</span></div>
+              <div class="ic-sec">Tributos atuais</div>
+              <div class="ic-out"><span class="l">Base PIS / COFINS (Total efetivo &minus; ICMS)</span><span class="v" id="icOutBase">&mdash;</span></div>
+              <div class="ic-out"><span class="l">Valor do PIS</span><span class="v" id="icOutPis">&mdash;</span></div>
+              <div class="ic-out"><span class="l">Valor do COFINS</span><span class="v" id="icOutCofins">&mdash;</span></div>
+              <div class="ic-sec">Reforma Tributária</div>
+              <div class="ic-out"><span class="l">Base IBS / CBS (vinculada)</span><span class="v" id="icOutBaseIbs">&mdash;</span></div>
+              <div class="ic-out hi"><span class="l">Valor do CBS</span><span class="v" id="icOutCbs">&mdash;</span></div>
+              <div class="ic-out hi"><span class="l">Valor do IBS UF</span><span class="v" id="icOutIbsUf">&mdash;</span></div>
+              <div class="ic-out hi"><span class="l">Valor do IBS Mun</span><span class="v" id="icOutIbsMun">&mdash;</span></div>
+              <div class="ic-total"><span class="l">Total IBS + CBS</span><span class="v" id="icOutIbsCbs">&mdash;</span></div>
+              <div class="ic-out" style="margin-top:12px;border-bottom:0"><span class="l">Carga Tributária Total (ICMS + IBS + CBS)</span><span class="v" id="icOutCarga">&mdash;</span></div>
+              <p class="ic-note">Redução aplicada apenas sobre CBS e IBS. Base IBS/CBS = Base PIS/COFINS (Total efetivo &minus; ICMS). O Valor do ICMS é recalculado automaticamente pela alíquota, mas pode ser editado manualmente.</p>
+            </div>
+          </div>
+          <script>
+          (function(){
+            function g(id){return document.getElementById(id);}
+            function n(id){var v=parseFloat(g(id).value);return isFinite(v)?v:0;}
+            function r2(x){return Math.round((x+Number.EPSILON)*100)/100;}
+            function brl(x){return (isFinite(x)?x:0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});}
+            function calc(){
+              var totalProd=n('icTotal'), despesas=n('icDespesas'), desconto=n('icDesconto');
+              var total=r2(totalProd+despesas-desconto), valIcms=n('icValIcms');
+              var aPis=n('icAliqPis')/100, aCof=n('icAliqCofins')/100;
+              var aCbs=n('icAliqCbs')/100, aUf=n('icAliqIbsUf')/100, aMun=n('icAliqIbsMun')/100;
+              var red=1-(n('icReducao')/100);
+              var base=r2(total-valIcms);
+              var pis=r2(base*aPis), cof=r2(base*aCof);
+              var baseIbs=base;
+              var cbs=r2(baseIbs*aCbs*red), ibsUf=r2(baseIbs*aUf*red), ibsMun=r2(baseIbs*aMun*red);
+              var totalIbsCbs=r2(cbs+ibsUf+ibsMun);
+              var carga=r2(valIcms+cbs+ibsUf+ibsMun);
+              g('icOutTotalEff').textContent=brl(total);
+              g('icOutBase').textContent=brl(base);
+              g('icOutPis').textContent=brl(pis);
+              g('icOutCofins').textContent=brl(cof);
+              g('icOutBaseIbs').textContent=brl(baseIbs);
+              g('icOutCbs').textContent=brl(cbs);
+              g('icOutIbsUf').textContent=brl(ibsUf);
+              g('icOutIbsMun').textContent=brl(ibsMun);
+              g('icOutIbsCbs').textContent=brl(totalIbsCbs);
+              g('icOutCarga').textContent=brl(carga);
+            }
+            function autoIcms(){ var eff=r2(n('icTotal')+n('icDespesas')-n('icDesconto')); g('icValIcms').value=r2(eff*n('icAliqIcms')/100).toFixed(2); calc(); }
+            g('icTotal').addEventListener('input',autoIcms);
+            g('icAliqIcms').addEventListener('input',autoIcms);
+            g('icDespesas').addEventListener('input',autoIcms);
+            g('icDesconto').addEventListener('input',autoIcms);
+            ['icValIcms','icAliqPis','icAliqCofins','icAliqCbs','icAliqIbsUf','icAliqIbsMun','icReducao'].forEach(function(id){ g(id).addEventListener('input',calc); });
+            calc();
+          })();
+          </script>
+        </section>
       </section>
     </div>
   </main>
@@ -1684,7 +1787,7 @@
     // Layout posicional do relatório (usado quando os dados são colados sem a linha de títulos)
     const CMP_POSITIONS = { 0:'code', 1:'name', 2:'unit', 3:'q', 4:'total', 14:'bcIcms', 15:'aliqIcms', 16:'icms', 21:'ipi', 73:'bcIbsCbs', 75:'cbs', 77:'cstIbsCbs', 78:'classTrib', 90:'ibsUf' };
     // Layout posicional do relatorio de notas RECEBIDAS (planilha colunas recebidas)
-    const CMP_POSITIONS_RECEBIDA = { 0:'code', 1:'name', 2:'unit', 3:'q', 4:'total', 13:'bcIcms', 14:'aliqIcms', 15:'icms', 22:'ipi', 36:'bcPis', 37:'bcCofins', 40:'pis', 41:'cofins', 87:'bcIbsCbs', 89:'cbs', 91:'cstIbsCbs', 92:'classTrib', 104:'ibsUf', 110:'ibsMun' };
+    const CMP_POSITIONS_RECEBIDA = { 0:'code', 1:'name', 2:'unit', 3:'q', 4:'total', 13:'bcIcms', 14:'aliqIcms', 15:'icms', 22:'ipi', 23:'bcIcmsSt', 25:'icmsSt', 36:'bcPis', 37:'bcCofins', 40:'pis', 41:'cofins', 87:'bcIbsCbs', 89:'cbs', 91:'cstIbsCbs', 92:'classTrib', 104:'ibsUf', 110:'ibsMun' };
     let cmpMode = 'auto';
     function cmpPositions() { return cmpMode === 'recebida' ? CMP_POSITIONS_RECEBIDA : CMP_POSITIONS; }
 
