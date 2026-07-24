@@ -1242,6 +1242,10 @@
           bcIcms: text(icmsNode, 'vBC'),
           aliqIcms: text(icmsNode, 'pICMS'),
           icms: text(icmsNode, 'vICMS'),
+          bcIcmsSt: firstText(icmsNode, ['vBCST']),
+          icmsSt: firstText(icmsNode, ['vICMSST']),
+          desconto: text(prod, 'vDesc'),
+          outras: firstText(prod, ['vOutro', 'vOutros']),
           bcIpi: firstText(ipiNode, ['vBC']),
           aliqIpi: firstText(ipiNode, ['pIPI']),
           ipi: firstText(ipiNode, ['vIPI']),
@@ -1366,8 +1370,10 @@
       $('productModalBody').innerHTML = [
         productDetail('NCM', r.ncm), productDetail('CFOP', r.cfop), productDetail('Unidade', r.unit),
         productDetail('Quantidade', qty(r.q)), productDetail('Valor unitário', money(r.unitValue)), productDetail('Valor total', money(r.total)),
+        productDetail('Desconto', money(r.desconto)), productDetail('Outras desp. acess.', money(r.outras)),
         productDetail('CST/CSOSN', r.cst), productDetail('BC ICMS', money(r.bcIcms)), productDetail('Alíquota ICMS', r.aliqIcms ? qty(r.aliqIcms) + '%' : '—'),
         productDetail('ICMS', money(r.icms)),
+        productDetail('BC ICMS ST', money(r.bcIcmsSt)), productDetail('Valor ICMS ST', money(r.icmsSt)),
         productDetail('BC IPI', money(r.bcIpi)), productDetail('Al\u00edq IPI', r.aliqIpi ? qty(r.aliqIpi) + '%' : '\u2014'), productDetail('Valor IPI', money(r.ipi)),
         productDetail('Base PIS', money(r.bcPis)), productDetail('Valor PIS', money(r.pis)),
         productDetail('Base COFINS', money(r.bcCofins)), productDetail('Valor COFINS', money(r.cofins)),
@@ -1660,8 +1666,12 @@
       { key:'ipi', re:/^valor ipi$/ },
       { key:'pis', re:/^(valor pis|vlr\.? pis|pis)$/ },
       { key:'cofins', re:/^(valor cofins|vlr\.? cofins|cofins)$/ },
-      { key:'bcPis', re:/^(base pis|bc pis|pis base|valor base pis)$/ },
-      { key:'bcCofins', re:/^(base cofins|bc cofins|cofins base|valor base cofins)$/ },
+      { key:'bcPis', re:/^(base( de)?( calculo)? pis|bc pis|pis base|valor base pis)$/ },
+      { key:'bcCofins', re:/^(base( de)?( calculo)? cofins|bc cofins|cofins base|valor base cofins)$/ },
+      { key:'bcIcmsSt', re:/^(base icms st|bc icms st|icms st base|base( de)?( calculo)? icms st|base st)$/ },
+      { key:'icmsSt', re:/^(valor icms st|icms st|vlr\.? icms st|v\.? icms st|icms substituicao)$/ },
+      { key:'desconto', re:/^(desconto|vlr\.? desconto|valor desconto|desc\.?|vlr\.? desc\.?)$/ },
+      { key:'outras', re:/^(outras despesas( acessorias)?|despesas acessorias|outras desp\.? acess\.?|vlr\.? outras despesas|outras despesas acess\.?|acessorias)$/ },
       { key:'bcIbsCbs', re:/^cbs valor base$/ },
       { key:'cbs', re:/^cbs valor imposto$/ },
       { key:'cstIbsCbs', re:/^cbs cst$/ },
@@ -1669,12 +1679,12 @@
       { key:'ibsUf', re:/^ibsuf valor imposto$/ },
       { key:'ibsMun', re:/^ibs ?mun valor imposto$/ }
     ];
-    const CMP_LABELS = { code:'Código', name:'Descrição', unit:'Un./Emb.', ncm:'NCM', cfop:'CFOP', q:'Qtd.', unitValue:'Vlr unit.', total:'Total Produto', bcIcms:'Base ICMS', aliqIcms:'Alíq ICMS', icms:'Valor ICMS', ipi:'Valor IPI', bcPis:'Base PIS', pis:'Valor PIS', bcCofins:'Base COFINS', cofins:'Valor COFINS', bcIbsCbs:'BC IBS/CBS', cbs:'CBS', cstIbsCbs:'CST IBS/CBS', classTrib:'Class. trib.', ibsUf:'IBS UF', ibsMun:'IBS Mun.' };
-    const CMP_NUMERIC = new Set(['q', 'unitValue', 'total', 'bcIcms', 'aliqIcms', 'icms', 'ipi', 'bcPis', 'pis', 'bcCofins', 'cofins', 'bcIbsCbs', 'cbs', 'ibsUf', 'ibsMun']);
+    const CMP_LABELS = { code:'Código', name:'Descrição', unit:'Un./Emb.', ncm:'NCM', cfop:'CFOP', q:'Qtd.', unitValue:'Vlr unit.', total:'Total Produto', bcIcms:'Base ICMS', aliqIcms:'Alíq ICMS', icms:'Valor ICMS', ipi:'Valor IPI', bcPis:'Base PIS', pis:'Valor PIS', bcCofins:'Base COFINS', cofins:'Valor COFINS', bcIcmsSt:'Base ICMS ST', icmsSt:'Valor ICMS ST', desconto:'Desconto', outras:'Outras desp. acess.', bcIbsCbs:'BC IBS/CBS', cbs:'CBS', cstIbsCbs:'CST IBS/CBS', classTrib:'Class. trib.', ibsUf:'IBS UF', ibsMun:'IBS Mun.' };
+    const CMP_NUMERIC = new Set(['q', 'unitValue', 'total', 'bcIcms', 'aliqIcms', 'icms', 'ipi', 'bcIcmsSt', 'icmsSt', 'desconto', 'outras', 'bcPis', 'pis', 'bcCofins', 'cofins', 'bcIbsCbs', 'cbs', 'ibsUf', 'ibsMun']);
     // Layout posicional do relatório (usado quando os dados são colados sem a linha de títulos)
     const CMP_POSITIONS = { 0:'code', 1:'name', 2:'unit', 3:'q', 4:'total', 14:'bcIcms', 15:'aliqIcms', 16:'icms', 21:'ipi', 73:'bcIbsCbs', 75:'cbs', 77:'cstIbsCbs', 78:'classTrib', 90:'ibsUf' };
     // Layout posicional do relatorio de notas RECEBIDAS (planilha colunas recebidas)
-    const CMP_POSITIONS_RECEBIDA = { 0:'code', 1:'name', 2:'unit', 3:'q', 4:'total', 13:'bcIcms', 14:'aliqIcms', 15:'icms', 22:'ipi', 40:'pis', 41:'cofins', 87:'bcIbsCbs', 89:'cbs', 91:'cstIbsCbs', 92:'classTrib', 104:'ibsUf', 110:'ibsMun' };
+    const CMP_POSITIONS_RECEBIDA = { 0:'code', 1:'name', 2:'unit', 3:'q', 4:'total', 13:'bcIcms', 14:'aliqIcms', 15:'icms', 22:'ipi', 36:'bcPis', 37:'bcCofins', 40:'pis', 41:'cofins', 87:'bcIbsCbs', 89:'cbs', 91:'cstIbsCbs', 92:'classTrib', 104:'ibsUf', 110:'ibsMun' };
     let cmpMode = 'auto';
     function cmpPositions() { return cmpMode === 'recebida' ? CMP_POSITIONS_RECEBIDA : CMP_POSITIONS; }
 
@@ -1754,7 +1764,7 @@
       if (value == null || value === '') return '—';
       if (key === 'q') return qty(value);
       if (key === 'aliqIcms') return qty(value) + '%';
-      if (key === 'unitValue' || key === 'total' || key === 'bcIcms' || key === 'icms' || key === 'ipi' || key === 'bcPis' || key === 'pis' || key === 'bcCofins' || key === 'cofins' || key === 'bcIbsCbs' || key === 'cbs' || key === 'ibsUf' || key === 'ibsMun') return money(cmpNum(value));
+      if (key === 'unitValue' || key === 'total' || key === 'bcIcms' || key === 'icms' || key === 'ipi' || key === 'bcIcmsSt' || key === 'icmsSt' || key === 'desconto' || key === 'outras' || key === 'bcPis' || key === 'pis' || key === 'bcCofins' || key === 'cofins' || key === 'bcIbsCbs' || key === 'cbs' || key === 'ibsUf' || key === 'ibsMun') return money(cmpNum(value));
       return escapeHtml(value);
     }
     function cmpEqual(key, a, b) {
@@ -1911,7 +1921,9 @@
         (xr && xr.ean && xr.ean !== 'SEM GTIN' ? `<div class="product-detail-item"><div class="k">EAN (XML)</div><div class="v">${escapeHtml(xr.ean)}</div></div>` : ''),
         cmpDetail('NCM','ncm',xr,pr), cmpDetail('CFOP','cfop',xr,pr), cmpDetail('Unidade/Emb.','unit',xr,pr),
         cmpDetail('Quantidade','q',xr,pr), cmpDetail('Valor unit\u00e1rio','unitValue',xr,pr), cmpDetail('Total Produto','total',xr,pr),
+        cmpDetail('Desconto','desconto',xr,pr), cmpDetail('Outras desp. acess.','outras',xr,pr),
         cmpDetail('BC ICMS','bcIcms',xr,pr), cmpDetail('Al\u00edq ICMS','aliqIcms',xr,pr), cmpDetail('Valor ICMS','icms',xr,pr),
+        cmpDetail('BC ICMS ST','bcIcmsSt',xr,pr), cmpDetail('Valor ICMS ST','icmsSt',xr,pr),
         cmpDetail('Valor IPI','ipi',xr,pr),
         cmpDetail('Base PIS','bcPis',xr,pr), cmpDetail('Valor PIS','pis',xr,pr),
         cmpDetail('Base COFINS','bcCofins',xr,pr), cmpDetail('Valor COFINS','cofins',xr,pr),
