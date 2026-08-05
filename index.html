@@ -11,6 +11,8 @@
       --canvas: rgba(255,255,255,0.035);
       --soft: rgba(255,255,255,0.055);
       --surface: rgba(255,255,255,0.08);
+      --panel: rgba(30,34,44,0.6);
+      --panel-fab: rgba(40,44,54,0.58);
       --border: rgba(255,255,255,0.20);
       --accent: #5e9fe8;
       --accent-soft: rgba(94,159,232,0.16);
@@ -773,7 +775,7 @@
       padding: 0;
       border-radius: 22px;
       border: 1px solid var(--border);
-      background: var(--surface);
+      background: var(--panel-fab);
       color: var(--text);
       font-weight: 650;
       font-size: 14px;
@@ -782,9 +784,9 @@
       align-items: center;
       justify-content: center;
       gap: 0;
-      box-shadow: var(--shadow);
-      -webkit-backdrop-filter: blur(8px);
-      backdrop-filter: blur(8px);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.18);
+      -webkit-backdrop-filter: blur(20px) saturate(160%);
+      backdrop-filter: blur(20px) saturate(160%);
       transition: transform .15s ease, opacity .2s ease, background .15s ease, border-color .15s ease;
     }
     .fab:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.32); }
@@ -797,7 +799,7 @@
     .fab-top { opacity: 0; transform: translateY(8px); pointer-events: none; }
     .fab-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .fab.is-hidden { display: none !important; }
-    .fab-filter-menu { position: fixed; right: 20px; bottom: 150px; z-index: 210; display: none; flex-direction: column; gap: 2px; padding: 8px; min-width: 210px; background: var(--surface); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
+    .fab-filter-menu { position: fixed; right: 20px; bottom: 150px; z-index: 210; display: none; flex-direction: column; gap: 2px; padding: 8px; min-width: 210px; background: var(--panel); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.16); }
     .fab-filter-menu.open { display: flex; animation: compareAlertIn .18s ease; }
     .fab-filter-menu .ff-title { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 4px 8px 6px; }
     .fab-filter-opt { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 10px; border: none; background: transparent; color: var(--text); border-radius: 9px; cursor: pointer; font-size: 13px; text-align: left; }
@@ -805,7 +807,7 @@
     .fab-filter-opt.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
     /* Botão de configurações (canto superior direito) */
     .fab-settings { position: fixed; top: 16px; right: 16px; z-index: 210; }
-    .settings-menu { position: fixed; top: 68px; right: 16px; z-index: 220; display: none; flex-direction: column; gap: 4px; padding: 12px; min-width: 256px; max-width: 300px; max-height: min(74vh, 560px); overflow-y: auto; background: var(--surface); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
+    .settings-menu { position: fixed; top: 68px; right: 16px; z-index: 220; display: none; flex-direction: column; gap: 4px; padding: 12px; min-width: 256px; max-width: 300px; max-height: min(74vh, 560px); overflow-y: auto; background: var(--panel); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.16); }
     .settings-menu.open { display: flex; animation: compareAlertIn .18s ease; }
     .settings-menu .set-title { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 4px 8px 6px; }
     .set-opt { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 10px; border: none; background: transparent; color: var(--text); border-radius: 9px; cursor: pointer; font-size: 13px; text-align: left; }
@@ -816,6 +818,9 @@
     .settings-menu .set-sub { font-size: 11px; color: var(--muted); padding: 7px 6px 3px; }
     .settings-menu .set-row { display: flex; gap: 5px; flex-wrap: wrap; padding: 0 2px; }
     .settings-menu .set-row .set-opt { flex: 1 1 0; width: auto; justify-content: center; text-align: center; min-width: 62px; padding: 7px 9px; font-size: 12px; border: 1px solid var(--border); border-radius: 9px; }
+    .set-col-grid { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 4px 4px; }
+    .set-col-grid .col-toggle { flex: 0 0 auto; width: auto; min-width: 0; justify-content: center; text-align: center; padding: 6px 10px; font-size: 12px; border: 1px solid var(--border); border-radius: 8px; opacity: .45; }
+    .set-col-grid .col-toggle.active { opacity: 1; border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
     .settings-menu .set-row .set-opt.active { background: var(--accent-soft); color: var(--accent); border-color: rgba(94,159,232,0.5); font-weight: 600; }
     @media screen and (max-width: 480px) { .fab-settings { top: 12px; right: 12px; } .settings-menu { top: 60px; right: 12px; min-width: 190px; } }
     @media screen and (max-width: 480px) { .fab-filter-menu { right: 14px; bottom: 140px; min-width: 190px; } }
@@ -1707,30 +1712,86 @@
     }
     window.restoreComparePrint = restoreComparePrint;
     function buildComparePdfLayout() {
-      var rows = (lastCompare && lastCompare.rows) ? lastCompare.rows : [];
+      var allRows = (lastCompare && lastCompare.rows) ? lastCompare.rows : [];
+      // Espelha o filtro ativo da tabela: só exporta os produtos visíveis
+      // (situação: Divergentes/Confere/etc. + filtros de coluna).
+      var rows = allRows;
+      try {
+        var __trs = document.querySelectorAll('#compareResult .compare-table tbody tr.compare-row');
+        if (__trs && __trs.length) {
+          var __vis = [];
+          __trs.forEach(function (tr) {
+            if (tr.style.display !== 'none') {
+              var __i = Number(tr.getAttribute('data-compare-index'));
+              if (!isNaN(__i) && allRows[__i]) __vis.push(allRows[__i]);
+            }
+          });
+          rows = __vis;
+        }
+      } catch (e) {}
       var nfEl = document.getElementById('nfNumber');
       var nf = nfEl && nfEl.textContent ? nfEl.textContent.trim() : '';
       var emitEl = document.getElementById('emitName');
       var emit = emitEl && emitEl.textContent ? emitEl.textContent.trim() : '';
-      var COLS = [
-        { key:'code', label:'cod', split:false, align:'center' },
-        { key:'name', label:'descrição', split:false, align:'left' },
-        { key:'classTrib', label:'classtrib', split:true, align:'center' },
-        { key:'total', label:'Total Prod.', split:true, align:'right' },
-        { key:'icms', label:'valor icms', split:true, align:'right' },
-        { key:'ipi', label:'valor ipi', split:true, align:'right' },
-        { key:'pis', label:'valor pis', split:true, align:'right' },
-        { key:'cofins', label:'vlr cofins', split:true, align:'right' },
-        { key:'bcIbsCbs', label:'bc ibs/cbs', split:true, align:'right' },
-        { key:'ibsUf', label:'ibs', split:true, align:'right' },
-        { key:'cbs', label:'cbs', split:true, align:'right' }
-      ];
+      // ----- Personalizações de PDF aplicadas a partir das Configurações -----
+      var fontPt = (typeof window.pdfCompareFontPt === 'number' && window.pdfCompareFontPt) ? window.pdfCompareFontPt : 6.6;
+      var cellPx = (fontPt * 1.742).toFixed(1), headPx = (fontPt * 1.818).toFixed(1), subPx = (fontPt * 1.515).toFixed(1);
+      var comfy = (window.pdfCompareDensity === 'comfortable');
+      var padCell = comfy ? '9px 7px' : '6px 7px';
+      var padSplit = comfy ? '8px 7px' : '5px 7px';
+      var zebra = (window.pdfCompareZebra === true);
+      var highlight = (window.pdfCompareHighlightDiff !== false);
+      var DIFFCOLORS = { red:'#f6a9a2', orange:'#f6c79a', yellow:'#f2e59a' };
+      var diffBg = DIFFCOLORS[window.pdfCompareDiffColor] || DIFFCOLORS.red;
+      var HEADCOLORS = { gray:'#141414', blue:'#16457a', green:'#14532d' };
+      var headBg = HEADCOLORS[window.pdfCompareHeaderColor] || HEADCOLORS.gray;
+      var bordersMode = window.pdfCompareBorders || 'full';
+      var cellBorder = bordersMode === 'none' ? 'none' : (bordersMode === 'soft' ? '1px solid #ccc' : '1px solid #000');
+      var headBorder = bordersMode === 'soft' ? '1px solid #999' : (bordersMode === 'none' ? '1px solid ' + headBg : '1px solid #000');
+      var nameW = Math.round((window.pdfCompareDescWidth || 19) * 10);
+      var codeW = Math.round((window.pdfCompareCodeWidth || 9) * 7);
+      var ALL_COLS = {
+        code:{label:'cod',split:false,align:'center'},
+        name:{label:'descrição',split:false,align:'left'},
+        ncm:{label:'ncm',split:true,align:'center'},
+        cfop:{label:'cfop',split:true,align:'center'},
+        unit:{label:'un',split:true,align:'center'},
+        q:{label:'qtd',split:true,align:'right'},
+        total:{label:'Total Prod.',split:true,align:'right'},
+        bcIcms:{label:'BC ICMS',split:true,align:'right'},
+        aliqIcms:{label:'Alíq. ICMS',split:true,align:'right'},
+        icms:{label:'Valor ICMS',split:true,align:'right'},
+        bcIcmsSt:{label:'BC ICMS ST',split:true,align:'right'},
+        icmsSt:{label:'Valor ICMS ST',split:true,align:'right'},
+        desconto:{label:'Desconto',split:true,align:'right'},
+        outras:{label:'Desp. Acess.',split:true,align:'right'},
+        ipi:{label:'valor ipi',split:true,align:'right'},
+        bcPis:{label:'BC PIS',split:true,align:'right'},
+        pis:{label:'valor pis',split:true,align:'right'},
+        bcCofins:{label:'BC COFINS',split:true,align:'right'},
+        cofins:{label:'vlr cofins',split:true,align:'right'},
+        classTrib:{label:'classtrib',split:true,align:'center'},
+        bcIbsCbs:{label:'bc ibs/cbs',split:true,align:'right'},
+        ibsUf:{label:'ibs',split:true,align:'right'},
+        ibsMun:{label:'ibs mun',split:true,align:'right'},
+        cbs:{label:'cbs',split:true,align:'right'}
+      };
+      var DEFAULT_COLS = ['code','name','classTrib','total','bcIcms','icms','ipi','pis','cofins','bcIbsCbs','ibsUf','cbs'];
+      var selCols = (Array.isArray(window.pdfCompareColumns) && window.pdfCompareColumns.length) ? window.pdfCompareColumns.slice() : DEFAULT_COLS.slice();
+      var COLS = selCols.filter(function(k){ return ALL_COLS[k]; }).map(function(k){ return { key:k, label:ALL_COLS[k].label, split:ALL_COLS[k].split, align:ALL_COLS[k].align }; });
+      if (!COLS.length) COLS = DEFAULT_COLS.map(function(k){ return { key:k, label:ALL_COLS[k].label, split:ALL_COLS[k].split, align:ALL_COLS[k].align }; });
+      var hasCode = COLS.some(function(c){ return c.key==='code'; });
+      var hasName = COLS.some(function(c){ return c.key==='name'; });
+      var dataColCount = COLS.filter(function(c){ return c.key!=='code' && c.key!=='name'; }).length;
+      var otherW = 108;
+      var containerW = 60 + (hasCode?codeW:0) + (hasName?nameW:0) + dataColCount * otherW;
+      if (containerW < 1180) containerW = 1180;
       var disp = function(key, obj){ if(!obj) return '—'; var v = cmpDisplay(key, obj[key]); return (v==null||v==='') ? '—' : v; };
-      var thBase = 'background:#141414;color:#fff;border:1px solid #000;padding:7px 5px;text-align:center;font-weight:700;font-size:12px;vertical-align:middle;line-height:1.25;';
-      var thSub = 'font-weight:400;font-size:10px;color:#d0d0d0;';
+      var thBase = 'background:'+headBg+';color:#fff;border:'+headBorder+';padding:7px 5px;text-align:center;font-weight:700;font-size:'+headPx+'px;vertical-align:middle;line-height:1.25;';
+      var thSub = 'font-weight:400;font-size:'+subPx+'px;color:#d0d0d0;';
       var thead = '<tr>';
       COLS.forEach(function(c){
-        var w = c.key==='name' ? 'width:190px;' : (c.key==='code' ? 'width:62px;' : 'width:96px;');
+        var w = c.key==='name' ? 'width:'+nameW+'px;' : (c.key==='code' ? 'width:'+codeW+'px;' : 'width:'+otherW+'px;');
         if (c.split) {
           thead += `<th style='${thBase}${w}'><div>${c.label}</div><div style='${thSub}'>xml</div><div style='${thSub}'>colado</div></th>`;
         } else {
@@ -1739,12 +1800,13 @@
       });
       thead += '</tr>';
       var tbody = '';
-      var minRows = Math.max(rows.length, 8);
+      var minRows = rows.length;
       for (var i=0;i<minRows;i++){
         var rec = rows[i];
         var xr = rec ? rec.xr : null;
         var pr = rec ? rec.pr : null;
-        tbody += '<tr>';
+        var rowBg = (zebra && (i % 2 === 1)) ? 'background:#f4f4f4;' : '';
+        tbody += "<tr style='" + rowBg + "'>";
         COLS.forEach(function(c){
           if (!c.split) {
             var single = '&nbsp;';
@@ -1754,15 +1816,15 @@
               else single = '—';
             }
             var alignS = c.align==='left' ? 'left' : 'center';
-            tbody += `<td style='border:1px solid #000;padding:6px 7px;text-align:${alignS};font-size:11.5px;vertical-align:middle;line-height:1.3;word-break:break-word;'>${single}</td>`;
+            tbody += `<td style='border:${cellBorder};padding:${padCell};text-align:${alignS};font-size:${cellPx}px;vertical-align:middle;line-height:1.3;word-break:break-word;'>${single}</td>`;
           } else {
-            var isDiff = rec && xr && pr && (cmpEqual(c.key, xr[c.key], pr[c.key]) === false);
-            var bg = isDiff ? 'background:#f6a9a2;' : '';
+            var isDiff = highlight && rec && xr && pr && (cmpEqual(c.key, xr[c.key], pr[c.key]) === false);
+            var bg = isDiff ? 'background:'+diffBg+';' : '';
             var topV = rec ? disp(c.key, xr) : '&nbsp;';
             var botV = rec ? disp(c.key, pr) : '&nbsp;';
-            tbody += `<td style='border:1px solid #000;padding:0;vertical-align:middle;${bg}'>`+
-              `<div style='padding:5px 7px;border-bottom:1px dashed #8a8a8a;text-align:${c.align};font-size:11.5px;white-space:nowrap;line-height:1.3;'>${topV}</div>`+
-              `<div style='padding:5px 7px;text-align:${c.align};font-size:11.5px;white-space:nowrap;line-height:1.3;'>${botV}</div>`+
+            tbody += `<td style='border:${cellBorder};padding:0;vertical-align:middle;${bg}'>`+
+              `<div style='padding:${padSplit};border-bottom:1px dashed #8a8a8a;text-align:${c.align};font-size:${cellPx}px;white-space:nowrap;line-height:1.3;'>${topV}</div>`+
+              `<div style='padding:${padSplit};text-align:${c.align};font-size:${cellPx}px;white-space:nowrap;line-height:1.3;'>${botV}</div>`+
             `</td>`;
           }
         });
@@ -1770,7 +1832,7 @@
       }
       var container = document.createElement('div');
       container.id = 'comparePdfLayout';
-      container.style.cssText = 'position:absolute;left:-99999px;top:0;width:1560px;background:#fff;padding:26px 28px;font-family:Arial,Helvetica,sans-serif;color:#000;box-sizing:border-box;';
+      container.style.cssText = 'position:absolute;left:-99999px;top:0;width:'+containerW+'px;background:#fff;padding:26px 28px;font-family:Arial,Helvetica,sans-serif;color:#000;box-sizing:border-box;';
       container.innerHTML =
         `<div style='display:flex;justify-content:space-between;align-items:center;margin:0 0 16px;gap:20px;'>`+
           `<div style='font-size:22px;font-weight:700;'>Comparação de dados</div>`+
@@ -1799,7 +1861,7 @@
         return html2canvas(container, { backgroundColor: '#ffffff', scale: window.pdfCompareScale || 2, useCORS: true, windowWidth: container.offsetWidth || 1560 });
       }).then(function (canvas) {
         var Ctor = (window.jspdf && window.jspdf.jsPDF) ? window.jspdf.jsPDF : window.jsPDF;
-        var pdf = new Ctor({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+        var pdf = new Ctor({ orientation: window.pdfCompareOrientation || 'landscape', unit: 'mm', format: 'a4' });
         var pageW = pdf.internal.pageSize.getWidth();
         var pageH = pdf.internal.pageSize.getHeight();
         var margin = (typeof window.pdfMargin === 'number' && !isNaN(window.pdfMargin)) ? window.pdfMargin : 8;
@@ -2296,10 +2358,40 @@
       </div>
       <div class="set-sub">Tamanho da fonte</div>
       <div class="set-row" data-group="font">
+        <button type="button" class="set-opt" data-font="5">Mínima</button>
         <button type="button" class="set-opt" data-font="5.8">Pequena</button>
         <button type="button" class="set-opt active" data-font="6.6">Média</button>
         <button type="button" class="set-opt" data-font="7.6">Grande</button>
+        <button type="button" class="set-opt" data-font="8.6">Máxima</button>
       </div>
+      <div class="set-sub">Colunas da impressão</div>
+      <div class="set-col-grid" id="colToggleGrid">
+        <button type="button" class="set-opt col-toggle" data-col="code">cód</button>
+        <button type="button" class="set-opt col-toggle" data-col="name">descrição</button>
+        <button type="button" class="set-opt col-toggle" data-col="ncm">ncm</button>
+        <button type="button" class="set-opt col-toggle" data-col="cfop">cfop</button>
+        <button type="button" class="set-opt col-toggle" data-col="unit">un</button>
+        <button type="button" class="set-opt col-toggle" data-col="q">qtd</button>
+        <button type="button" class="set-opt col-toggle" data-col="total">Total Prod.</button>
+        <button type="button" class="set-opt col-toggle" data-col="bcIcms">BC ICMS</button>
+        <button type="button" class="set-opt col-toggle" data-col="aliqIcms">Alíq. ICMS</button>
+        <button type="button" class="set-opt col-toggle" data-col="icms">Valor ICMS</button>
+        <button type="button" class="set-opt col-toggle" data-col="bcIcmsSt">BC ICMS ST</button>
+        <button type="button" class="set-opt col-toggle" data-col="icmsSt">Valor ICMS ST</button>
+        <button type="button" class="set-opt col-toggle" data-col="desconto">Desconto</button>
+        <button type="button" class="set-opt col-toggle" data-col="outras">Desp. Acess.</button>
+        <button type="button" class="set-opt col-toggle" data-col="ipi">Valor IPI</button>
+        <button type="button" class="set-opt col-toggle" data-col="bcPis">BC PIS</button>
+        <button type="button" class="set-opt col-toggle" data-col="pis">Valor PIS</button>
+        <button type="button" class="set-opt col-toggle" data-col="bcCofins">BC COFINS</button>
+        <button type="button" class="set-opt col-toggle" data-col="cofins">Valor COFINS</button>
+        <button type="button" class="set-opt col-toggle" data-col="classTrib">ClassTrib</button>
+        <button type="button" class="set-opt col-toggle" data-col="bcIbsCbs">BC IBS/CBS</button>
+        <button type="button" class="set-opt col-toggle" data-col="ibsUf">IBS</button>
+        <button type="button" class="set-opt col-toggle" data-col="ibsMun">IBS Mun.</button>
+        <button type="button" class="set-opt col-toggle" data-col="cbs">CBS</button>
+      </div>
+      <div style="font-size:10.5px;color:var(--muted);padding:2px 6px 6px;line-height:1.4;">Selecione as colunas que saem na impressão. A largura se ajusta à página automaticamente.</div>
       <div class="set-sub">Densidade das células</div>
       <div class="set-row" data-group="density">
         <button type="button" class="set-opt active" data-density="compact">Compacta</button>
@@ -2492,6 +2584,7 @@
       window.pdfCompareCanvasWidth = 2200;
       window.pdfJpegQuality = 0.92;
       window.pdfDateInName = false;
+      window.pdfCompareColumns = ['code','name','classTrib','total','bcIcms','icms','ipi','pis','cofins','bcIbsCbs','ibsUf','cbs'];
       var ACCENTS = { blue: ['#5e9fe8', 'rgba(94,159,232,0.16)'], green: ['#46b17f', 'rgba(70,177,127,0.18)'], purple: ['#9a7cf0', 'rgba(154,124,240,0.18)'], orange: ['#e08a3c', 'rgba(224,138,60,0.18)'] };
       function applyAccent(name) { var a = ACCENTS[name] || ACCENTS.blue; try { document.documentElement.style.setProperty('--accent', a[0]); document.documentElement.style.setProperty('--accent-soft', a[1]); } catch (e) {} }
       try {
@@ -2512,6 +2605,7 @@
         if ((s = localStorage.getItem('danfeCmpHdr'))) window.pdfCompareHeaderColor = s;
         if ((s = localStorage.getItem('danfeJpeg'))) window.pdfJpegQuality = parseFloat(s);
         if ((s = localStorage.getItem('danfeDateName'))) window.pdfDateInName = (s === 'on');
+        var scols = localStorage.getItem('danfeCmpCols'); if (scols) { var acols = JSON.parse(scols); if (Array.isArray(acols) && acols.length) window.pdfCompareColumns = acols; }
       } catch (e) {}
       applyAccent(window.uiAccent);
       function setActiveByData(group, attr, val) {
@@ -2572,6 +2666,34 @@
       wireSettingGroup('headercolor', 'data-headercolor', function (v, opt) { window.pdfCompareHeaderColor = v; persistSetting('danfeCmpHdr', v); if (typeof showStatus === 'function') showStatus('Cor do cabeçalho: ' + opt.textContent, 'ok'); });
       wireSettingGroup('filequality', 'data-filequality', function (v, opt) { window.pdfJpegQuality = parseFloat(v); persistSetting('danfeJpeg', v); if (typeof showStatus === 'function') showStatus('Qualidade do arquivo: ' + opt.textContent, 'ok'); });
       wireSettingGroup('datename', 'data-datename', function (v, opt) { window.pdfDateInName = (v === 'on'); persistSetting('danfeDateName', v); if (typeof showStatus === 'function') showStatus('Data no nome: ' + opt.textContent, 'ok'); });
+      function syncColumnToggles() {
+        if (!settingsMenu) return;
+        var grid = settingsMenu.querySelector('#colToggleGrid');
+        if (!grid) return;
+        var sel = Array.isArray(window.pdfCompareColumns) ? window.pdfCompareColumns : [];
+        grid.querySelectorAll('.col-toggle').forEach(function (b) { b.classList.toggle('active', sel.indexOf(b.getAttribute('data-col')) > -1); });
+      }
+      function wireColumnToggles() {
+        if (!settingsMenu) return;
+        var grid = settingsMenu.querySelector('#colToggleGrid');
+        if (!grid) return;
+        var order = [].slice.call(grid.querySelectorAll('.col-toggle')).map(function (b) { return b.getAttribute('data-col'); });
+        grid.querySelectorAll('.col-toggle').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var key = btn.getAttribute('data-col');
+            var sel = Array.isArray(window.pdfCompareColumns) ? window.pdfCompareColumns.slice() : [];
+            var idx = sel.indexOf(key);
+            if (idx > -1) sel.splice(idx, 1); else sel.push(key);
+            sel = order.filter(function (k) { return sel.indexOf(k) > -1; });
+            window.pdfCompareColumns = sel;
+            try { localStorage.setItem('danfeCmpCols', JSON.stringify(sel)); } catch (e) {}
+            btn.classList.toggle('active');
+            if (typeof showStatus === 'function') showStatus('Colunas da impressão: ' + sel.length + ' selecionada(s)', 'ok');
+          });
+        });
+      }
+      wireColumnToggles();
+      syncColumnToggles();
       document.addEventListener('click', function (e) {
         if (!settingsMenu || !settingsMenu.classList.contains('open')) return;
         if (settingsMenu.contains(e.target) || (fabSettings && fabSettings.contains(e.target))) return;
