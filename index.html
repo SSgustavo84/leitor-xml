@@ -775,7 +775,7 @@
       padding: 0;
       border-radius: 22px;
       border: 1px solid var(--border);
-      background: var(--panel-fab);
+      background: linear-gradient(135deg, rgba(56,62,78,0.97), rgba(34,38,50,0.95));
       color: var(--text);
       font-weight: 650;
       font-size: 14px;
@@ -799,7 +799,7 @@
     .fab-top { opacity: 0; transform: translateY(8px); pointer-events: none; }
     .fab-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .fab.is-hidden { display: none !important; }
-    .fab-filter-menu { position: fixed; right: 20px; bottom: 150px; z-index: 210; display: none; flex-direction: column; gap: 2px; padding: 8px; min-width: 210px; background: var(--panel); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.16); }
+    .fab-filter-menu { position: fixed; right: 20px; bottom: 150px; z-index: 210; display: none; flex-direction: column; gap: 2px; padding: 8px; min-width: 210px; background: linear-gradient(140deg, rgba(44,50,64,0.98), rgba(26,30,40,0.96)); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.16); }
     .fab-filter-menu.open { display: flex; animation: compareAlertIn .18s ease; }
     .fab-filter-menu .ff-title { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 4px 8px 6px; }
     .fab-filter-opt { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 10px; border: none; background: transparent; color: var(--text); border-radius: 9px; cursor: pointer; font-size: 13px; text-align: left; }
@@ -807,7 +807,7 @@
     .fab-filter-opt.active { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
     /* Botão de configurações (canto superior direito) */
     .fab-settings { position: fixed; top: 16px; right: 16px; z-index: 210; }
-    .settings-menu { position: fixed; top: 68px; right: 16px; z-index: 220; display: none; flex-direction: column; gap: 4px; padding: 12px; min-width: 256px; max-width: 300px; max-height: min(74vh, 560px); overflow-y: auto; background: var(--panel); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.16); }
+    .settings-menu { position: fixed; top: 68px; right: 16px; z-index: 220; display: none; flex-direction: column; gap: 4px; padding: 12px; min-width: 256px; max-width: 300px; max-height: min(74vh, 560px); overflow-y: auto; background: linear-gradient(140deg, rgba(44,50,64,0.98), rgba(26,30,40,0.96)); -webkit-backdrop-filter: blur(22px) saturate(160%); backdrop-filter: blur(22px) saturate(160%); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.16); }
     .settings-menu.open { display: flex; animation: compareAlertIn .18s ease; }
     .settings-menu .set-title { font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); padding: 4px 8px 6px; }
     .set-opt { display: flex; align-items: center; gap: 8px; width: 100%; padding: 9px 10px; border: none; background: transparent; color: var(--text); border-radius: 9px; cursor: pointer; font-size: 13px; text-align: left; }
@@ -2116,7 +2116,7 @@
         const xr = productRows[idx] || null;
         const pr = parsed.rows[idx] || null;
         const pcode = pr && pr.code ? pr.code : '—';
-        const pname = pr && pr.name ? pr.name : '—';
+        const pname = pr && pr.name ? pr.name : '���';
         const punit = pr && pr.unit ? pr.unit : '—';
         const pqty = pr && (pr.q !== undefined && pr.q !== null && pr.q !== '') ? cmpDisplay('q', pr.q) : '—';
         let status, statusClass, cells = '';
