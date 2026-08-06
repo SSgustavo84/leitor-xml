@@ -841,7 +841,6 @@
     <section class="hero no-print">
       <div>
         <h1>Leitor de XML de Nota Fiscal</h1>
-        <p class="subtitle">Anexe um XML de NF-e/NFC-e para visualizar os dados em formato organizado, com produtos, impostos, emitente, destinatário e totais. Depois exporte com a mesma formatação em PDF.</p>
       </div>
       <input id="xmlFile" type="file" accept=".xml,text/xml,application/xml" />
     </section>
@@ -996,7 +995,7 @@
       <section class="compare no-print">
         <div class="compare-head">
           <h2>Comparação de dados</h2>
-          <p>O tipo de layout (<strong>Em recebimento</strong> ou <strong>Nota recebida</strong>) é identificado <strong>automaticamente</strong> ao comparar (modo <strong>Automático</strong>) — só é preciso forçar manualmente nos botões acima em casos raros. Cole os dados copiados do seu sistema (uma linha por produto, colunas separadas por TAB). O leitor reconhece automaticamente as colunas do seu relatório — com ou sem a linha de títulos — e compara com o XML os campos: Total Produto, Base ICMS, Alíq ICMS, Valor ICMS, Valor IPI e os campos de IBS/CBS (BC IBS/CBS, CBS, IBS UF). Código, Descrição, Embalagem e Quantidade são exibidos apenas como referência (o que você colou), sem comparar. As demais colunas são ignoradas.</p>
+          <p>Layout (<strong>Em recebimento</strong> ou <strong>Nota recebida</strong>) detectado <strong>automaticamente</strong> — force manualmente só em casos raros. Cole os dados do sistema (uma linha por produto, colunas separadas por TAB), com ou sem títulos. Compara: Total Produto, Base ICMS, Alíq ICMS, Valor ICMS, Valor IPI e IBS/CBS (BC IBS/CBS, CBS, IBS UF). Código, Descrição, Embalagem e Quantidade são só referência; as demais colunas são ignoradas.</p>
         </div>
         <div class="compare-invoice" id="compareInvoice">
           <div class="ci-empty">Importe um XML na aba “Nota Fiscal” para ver aqui os dados da nota.</div>
@@ -1592,7 +1591,84 @@
         }
       }
     }
+    function pdfMeasureTable(root, rowSelector, headerSelector) {
+      if (!root) return null;
+      var rootRect = root.getBoundingClientRect();
+      var width = rootRect.width || root.offsetWidth || 1;
+      var rowBottoms = [];
+      var rows = root.querySelectorAll(rowSelector || 'tbody tr');
+      for (var i = 0; i < rows.length; i++) {
+        var rr = rows[i].getBoundingClientRect();
+        if (rr.height > 0) rowBottoms.push(rr.bottom - rootRect.top);
+      }
+      var header = headerSelector ? root.querySelector(headerSelector) : null;
+      var headerTop = 0, headerBottom = 0;
+      if (header) {
+        var hr = header.getBoundingClientRect();
+        headerTop = hr.top - rootRect.top;
+        headerBottom = hr.bottom - rootRect.top;
+      }
+      return { width: width, rowBottoms: rowBottoms, headerTop: headerTop, headerBottom: headerBottom };
+    }
+    function pdfAddCanvasPages(pdf, canvas, pageW, pageH, margin, quality, metrics) {
+      var imgW = pageW - margin * 2;
+      var usableH = pageH - margin * 2;
+      var pxPerMm = canvas.width / imgW;
+      var pageHpx = Math.max(1, Math.floor(usableH * pxPerMm));
+      if (canvas.height <= pageHpx + 1) {
+        pdf.addImage(canvas.toDataURL('image/jpeg', quality), 'JPEG', margin, margin, imgW, canvas.height / pxPerMm);
+        return;
+      }
+
+      var sf = metrics && metrics.width ? canvas.width / metrics.width : 1;
+      var cuts = [];
+      if (metrics && metrics.rowBottoms) {
+        for (var i = 0; i < metrics.rowBottoms.length; i++) {
+          var cp = Math.max(1, Math.min(canvas.height, Math.round(metrics.rowBottoms[i] * sf)));
+          if (!cuts.length || cp > cuts[cuts.length - 1]) cuts.push(cp);
+        }
+      }
+      var headerTop = metrics ? Math.max(0, Math.floor(metrics.headerTop * sf)) : 0;
+      var headerBottom = metrics ? Math.min(canvas.height, Math.ceil(metrics.headerBottom * sf)) : 0;
+      var headerH = Math.max(0, headerBottom - headerTop);
+      if (headerH >= pageHpx * 0.35) headerH = 0;
+
+      var sy = 0, first = true;
+      while (sy < canvas.height) {
+        var repeatHeader = !first && headerH > 0 && sy >= headerBottom - 2;
+        var capacity = Math.max(1, pageHpx - (repeatHeader ? headerH : 0));
+        var limit = Math.min(canvas.height, sy + capacity);
+        var cut = limit;
+        if (limit < canvas.height) {
+          var rowCut = -1;
+          for (var b = 0; b < cuts.length; b++) {
+            if (cuts[b] > sy + 2 && cuts[b] <= limit && cuts[b] > rowCut) rowCut = cuts[b];
+          }
+          if (rowCut > sy + 2) cut = rowCut;
+        }
+        cut = Math.max(sy + 1, Math.min(canvas.height, Math.round(cut)));
+        var bodyH = cut - sy;
+        var outH = bodyH + (repeatHeader ? headerH : 0);
+        var tmp = document.createElement('canvas');
+        tmp.width = canvas.width;
+        tmp.height = outH;
+        var ctx = tmp.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, tmp.width, tmp.height);
+        var dy = 0;
+        if (repeatHeader) {
+          ctx.drawImage(canvas, 0, headerTop, canvas.width, headerH, 0, 0, canvas.width, headerH);
+          dy = headerH;
+        }
+        ctx.drawImage(canvas, 0, sy, canvas.width, bodyH, 0, dy, canvas.width, bodyH);
+        if (!first) pdf.addPage();
+        pdf.addImage(tmp.toDataURL('image/jpeg', quality), 'JPEG', margin, margin, imgW, outH / pxPerMm);
+        sy = cut;
+        first = false;
+      }
+    }
     function generatePdf(opts) {
+      var tableMetrics = null;
       var printFallback = function () {
         if (opts.compare) {
           activateTab('comp');
@@ -1632,6 +1708,13 @@
             st.textContent = printCss;
             doc.head.appendChild(st);
             if (opts.extraCss) { var st2 = doc.createElement('style'); st2.setAttribute('data-pdf-extra', '1'); st2.textContent = opts.extraCss; doc.head.appendChild(st2); }
+            if (opts.rowSelector) {
+              var cloneTarget = doc.querySelector('.app');
+              if (cloneTarget) {
+                void cloneTarget.offsetHeight;
+                tableMetrics = pdfMeasureTable(cloneTarget, opts.rowSelector, opts.headerSelector);
+              }
+            }
           }
         });
       }).then(function (canvas) {
@@ -1640,20 +1723,7 @@
         var pageW = pdf.internal.pageSize.getWidth();
         var pageH = pdf.internal.pageSize.getHeight();
         var margin = (typeof window.pdfMargin === 'number' && !isNaN(window.pdfMargin)) ? window.pdfMargin : 10;
-        var imgW = pageW - margin * 2;
-        var imgH = canvas.height * imgW / canvas.width;
-        var usableH = pageH - margin * 2;
-        var img = canvas.toDataURL('image/jpeg', window.pdfJpegQuality || 0.92);
-        if (imgH <= usableH + 0.5) {
-          pdf.addImage(img, 'JPEG', margin, margin, imgW, imgH);
-        } else {
-          var drawn = 0;
-          while (drawn < imgH - 0.5) {
-            pdf.addImage(img, 'JPEG', margin, margin - drawn, imgW, imgH);
-            drawn += usableH;
-            if (drawn < imgH - 0.5) pdf.addPage();
-          }
-        }
+        pdfAddCanvasPages(pdf, canvas, pageW, pageH, margin, window.pdfJpegQuality || 0.92, tableMetrics);
         pdf.save(opts.filename);
         showStatus('PDF gerado com sucesso.', 'ok');
       }).catch(function (e) {
@@ -1667,7 +1737,14 @@
         showStatus('Importe um XML antes de exportar o PDF.', 'error');
         return;
       }
-      generatePdf({ landscape: false, compare: false, scale: window.pdfNotaScale || 2, filename: pdfFilename('Nota-Fiscal') });
+      generatePdf({
+        landscape: false,
+        compare: false,
+        scale: window.pdfNotaScale || 2,
+        filename: pdfFilename('Nota-Fiscal'),
+        rowSelector: '#productsBody tr.product-row',
+        headerSelector: 'table[aria-label="Produtos da nota fiscal"] thead'
+      });
     }
 
     function pdfCompareOverridesCss() {
@@ -1853,6 +1930,7 @@
       showStatus('Gerando PDF…', 'ok');
       var container = buildComparePdfLayout();
       document.body.appendChild(container);
+      var tableMetrics = pdfMeasureTable(container, 'tbody tr', 'thead');
       var cleanup = function(){ if (container && container.parentNode) container.parentNode.removeChild(container); };
       Promise.all([
         pdfLoadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'),
@@ -1865,51 +1943,8 @@
         var pageW = pdf.internal.pageSize.getWidth();
         var pageH = pdf.internal.pageSize.getHeight();
         var margin = (typeof window.pdfMargin === 'number' && !isNaN(window.pdfMargin)) ? window.pdfMargin : 8;
-        var imgW = pageW - margin * 2;
-        var imgH = canvas.height * imgW / canvas.width;
-        var usableH = pageH - margin * 2;
         var quality = window.pdfJpegQuality || 0.92;
-        if (imgH <= usableH + 0.5) {
-          pdf.addImage(canvas.toDataURL('image/jpeg', quality), 'JPEG', margin, margin, imgW, imgH);
-        } else {
-          var pxPerMm = canvas.width / imgW;
-          var pageHpx = Math.floor(usableH * pxPerMm);
-          var sf = canvas.width / (container.offsetWidth || 1560);
-          var crect = container.getBoundingClientRect();
-          var cuts = [];
-          var trList = container.querySelectorAll('tr');
-          for (var t = 0; t < trList.length; t++) {
-            cuts.push((trList[t].getBoundingClientRect().bottom - crect.top) * sf);
-          }
-          var sy = 0;
-          var first = true;
-          while (sy < canvas.height - 0.5) {
-            var limit = sy + pageHpx;
-            var cut;
-            if (limit >= canvas.height - 0.5) {
-              cut = canvas.height;
-            } else {
-              cut = -1;
-              for (var b = 0; b < cuts.length; b++) {
-                if (cuts[b] > sy + 1 && cuts[b] <= limit + 0.5 && cuts[b] > cut) cut = cuts[b];
-              }
-              if (cut <= sy + 1) cut = limit;
-            }
-            var sliceH = Math.round(cut - sy);
-            if (sliceH < 1) sliceH = 1;
-            var tmp = document.createElement('canvas');
-            tmp.width = canvas.width;
-            tmp.height = sliceH;
-            var ctx = tmp.getContext('2d');
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0, 0, tmp.width, tmp.height);
-            ctx.drawImage(canvas, 0, sy, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
-            if (!first) pdf.addPage();
-            pdf.addImage(tmp.toDataURL('image/jpeg', quality), 'JPEG', margin, margin, imgW, sliceH / pxPerMm);
-            sy += sliceH;
-            first = false;
-          }
-        }
+        pdfAddCanvasPages(pdf, canvas, pageW, pageH, margin, quality, tableMetrics);
         pdf.save(pdfFilename('Comparacao-NF'));
         showStatus('PDF gerado com sucesso.', 'ok');
         cleanup();
